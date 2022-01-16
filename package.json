@@ -4,6 +4,8 @@
   "main": "./src/index.ts",
   "license": "MIT",
   "dependencies": {
+    "@discord-player/downloader": "^3.0.1",
+    "@discord-player/extractor": "^3.0.2",
     "@discordjs/opus": "^0.7.0",
     "@discordjs/rest": "^0.2.0-canary.0",
     "@typegoose/typegoose": "^9.4.0",
