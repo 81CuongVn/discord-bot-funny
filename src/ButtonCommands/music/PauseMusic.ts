@@ -1,6 +1,7 @@
 import { checkSameRoom, getVoiceChannel } from "../../utils/checkSameRoom";
 import { IButtonCommandHandlers } from "../../types/buttonCommands";
 import { ButtonId } from "../../types/ButtonId";
+import { getMessageButtonForMusic, MessageButtonDisabled } from '../../utils/MessageButtonForMusic';
 export default {
   name: ButtonId.PauseMusic,
   run: async (client, interaction, args) => {
@@ -38,8 +39,11 @@ export default {
     }
 
     queue.setPaused(true);
+    const row = getMessageButtonForMusic([MessageButtonDisabled.PauseMusic
+    ]);
     interaction.update({
       content: "Bot đã tạm dừng",
+      components: [row],
     });
     return;
   },

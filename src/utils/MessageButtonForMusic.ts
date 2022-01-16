@@ -1,7 +1,17 @@
 import { MessageActionRow, MessageButton } from "discord.js";
 import { ButtonId } from "./../types/ButtonId";
 
-export const getMessageButtonForMusic = () => {
+export enum MessageButtonDisabled {
+  None = "none",
+  SkipMusic = "skipMusic",
+  PauseMusic = "pauseMusic",
+  ResumeMusic = "resumeMusic",
+  StopMusic = "stopMusic",
+  TurnOnRepeatMusic = "turnOnRepeatMusic",
+  TurnOffRepeatMusic = "turnOffRepeatMusic",
+}
+
+export const getMessageButtonForMusic = (disabled: MessageButtonDisabled[]) => {
   const row = new MessageActionRow();
   row.addComponents(
     new MessageButton()
@@ -9,27 +19,28 @@ export const getMessageButtonForMusic = () => {
       .setLabel("bỏ qua bài hát")
       .setEmoji("⏭️")
       .setStyle("PRIMARY")
+      .setDisabled(disabled.includes(MessageButtonDisabled.SkipMusic)),
   );
   row.addComponents(
     new MessageButton()
       .setCustomId(ButtonId.PauseMusic)
       .setLabel("tạm dừng bài hát")
       .setEmoji("⏸")
-      .setStyle("PRIMARY")
+      .setStyle("PRIMARY").setDisabled(disabled.includes(MessageButtonDisabled.PauseMusic)),
   );
   row.addComponents(
     new MessageButton()
       .setCustomId(ButtonId.ResumeMusic)
       .setEmoji("⏯")
       .setLabel("tiếp tục bài hát")
-      .setStyle("PRIMARY")
+      .setStyle("PRIMARY").setDisabled(disabled.includes(MessageButtonDisabled.ResumeMusic)),
   );
   row.addComponents(
     new MessageButton()
       .setCustomId(ButtonId.StopMusic)
       .setLabel("dừng phát nhạc")
       .setEmoji("⏹")
-      .setStyle("PRIMARY")
+      .setStyle("PRIMARY").setDisabled(disabled.includes(MessageButtonDisabled.StopMusic)),
   );
   //   row.addComponents(
   //     new MessageButton()

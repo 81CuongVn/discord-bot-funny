@@ -53,6 +53,10 @@ export const bot = () => {
     // const channel = queue.metadata.channel as TextChannel;
     // channel.send(`🎶 | The channel is empty! làm cho bot cảm thấy cô đơn :)`);
   });
+  player.on("connectionError", (queue: any, error) => {
+    //queue.metadata.channel.send(`🎶 | An error occurred: ${error.message}`)
+    console.log(error);
+  });
   client.player = player;
   client.slashCommand = new Collection();
   client.commands = new Collection();

@@ -1,5 +1,5 @@
 import { Interaction, MessageButton, MessageEmbed } from "discord.js";
-import { getMessageButtonForMusic } from "../../utils/MessageButtonForMusic";
+import { getMessageButtonForMusic, MessageButtonDisabled } from "../../utils/MessageButtonForMusic";
 import { getVoiceChannel } from "../../utils/checkSameRoom";
 import { IClient } from "./../../types/index";
 import { MenuId } from "./../../types/MenuId";
@@ -16,7 +16,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
       cmd.run(client, interaction, interaction.options);
     }
     if (interaction.isButton()) {
-      console.log(interaction);
+      console.log(interaction.message.components);
       const cmd = client.buttonCommand?.get(interaction.customId);
       console.log(cmd, client.buttonCommand, interaction.customId);
       if (!cmd || cmd == undefined) {
@@ -64,7 +64,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           });
           return;
         }
-        const row = getMessageButtonForMusic();
+        const row = getMessageButtonForMusic([MessageButtonDisabled.ResumeMusic]);
         const embed = new MessageEmbed()
           .setTitle(track.title)
           .setURL(track.url)

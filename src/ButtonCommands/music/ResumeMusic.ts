@@ -1,6 +1,7 @@
 import { ButtonId } from "../../types/ButtonId";
 import { IButtonCommandHandlers } from "../../types/buttonCommands";
 import { checkSameRoom, getVoiceChannel } from "../../utils/checkSameRoom";
+import { getMessageButtonForMusic, MessageButtonDisabled } from '../../utils/MessageButtonForMusic';
 
 export default {
     name: ButtonId.ResumeMusic,
@@ -38,9 +39,11 @@ export default {
             return;
         }
         queue.setPaused(false);
+        const row = getMessageButtonForMusic([MessageButtonDisabled.ResumeMusic]);
         interaction.update({
             content: "Bot đã tiếp tục",
-        });
+            components: [row],
+        })
         return;
     }
 } as IButtonCommandHandlers;

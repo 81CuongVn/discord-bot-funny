@@ -51,7 +51,7 @@ export default {
           channel: interaction.channel,
         },
       });
-      await interaction.deferReply();
+
       // verify vc connection
       try {
         if (!queue?.connection) await queue?.connect(voiceChannel.id);
@@ -68,6 +68,7 @@ export default {
           ephemeral: true,
         });
       }
+      await interaction.deferReply();
       const track = (
         await client.player?.search(song, {
           requestedBy: interaction.user,
