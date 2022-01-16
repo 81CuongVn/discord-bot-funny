@@ -34,5 +34,9 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon ./src/index.ts"
+  },
+  "engines": {
+    "node": ">=16.13.0",
+    "npm": ">=8.1.0"
   }
 }
