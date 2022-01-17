@@ -18,7 +18,6 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
     if (interaction.isButton()) {
       console.log(interaction.message.components);
       const cmd = client.buttonCommand?.get(interaction.customId);
-      console.log(cmd, client.buttonCommand, interaction.customId);
       if (!cmd || cmd == undefined) {
         interaction.update({ content: "Không tìm thấy lệnh này" });
         return;

@@ -2239,6 +2239,18 @@ picomatch@^2.0.4, picomatch@^2.2.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+play-audio@^0.4.3:
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/play-audio/-/play-audio-0.4.9.tgz#74f3ad053d02e0464fce1a28887b2b99da75a76b"
+  integrity sha512-An88OAvbCcFZH00n9eq6+t2LmJUPJgBCz8ycKXdvUWQz3GcZ3U4o1ZsSHfVFIuoiKuovX+ue5gKNcfSs4ophew==
+
+play-dl@^1.7.8:
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/play-dl/-/play-dl-1.7.8.tgz#a85ce7ba2225bf048b09d58cb00e814a0ecb5551"
+  integrity sha512-yxK+qmZ09HATi/T2bBHQX2n2nJ9UI7g9btIi+NKjABZw1ISpgK4AIHJ3y5B+HfG77g4SUbbBZ6fK9fiGnDxuUA==
+  dependencies:
+    play-audio "^0.4.3"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"

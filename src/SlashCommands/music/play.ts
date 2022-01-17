@@ -9,6 +9,7 @@ import {
 import { getVoiceChannel } from "../../utils/checkSameRoom";
 import { checkSameRoom } from "./../../utils/checkSameRoom";
 import { MenuId } from "./../../types/MenuId";
+import playdl from "play-dl";
 export default {
   name: "play".toLocaleLowerCase(),
   description: "find song for you chose",
@@ -49,6 +50,16 @@ export default {
       const queue = client.player?.createQueue(interaction.guild, {
         metadata: {
           channel: interaction.channel,
+        }, 
+        async onBeforeCreateStream(track, source, _queue) {
+          // only trap youtube source
+          if (source === "youtube") {
+            // track here would be youtube track
+            const stream:any = (await playdl.stream(track.url)).stream;
+
+            return stream;
+            // we must return readable stream or void (returning void means telling discord-player to look for default extractor)
+          }
         },
       });
 
