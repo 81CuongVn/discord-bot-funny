@@ -3,6 +3,5 @@ export const ButtonId = {
     PauseMusic: "PauseMusic".toLocaleLowerCase(),
     ResumeMusic: "ResumeMusic".toLocaleLowerCase(),
     StopMusic: "StopMusic".toLocaleLowerCase(),
-    TurnOnRepeatMusic: "TurnOnRepeatMusic".toLocaleLowerCase(),
-    TurnOffRepeatMusic: "TurnOffRepeatMusic".toLocaleLowerCase(),
+    loopMusic: "loopMusic".toLocaleLowerCase(),
 }

@@ -28,14 +28,35 @@ export const bot = () => {
       `🎶 | Now playing **${track.title}**! với thời lượng ${track.duration}`
     );
   });
-  player.on("trackEnd", (queue: any, track) => {
+  player.on("trackEnd", async (queue: any, track) => {
     // //queue.metadata.channel.send(`🎶 | **${track.title}** has ended!`)
-    // const channel = queue.metadata.channel as TextChannel;
-    // channel.send(`🎶 | **${track.title}** has ended!`);
+    const channel = queue.metadata.channel as TextChannel;
+    channel.send(`🎶 | **${track.title}** has ended!`);
+    const fetched = await channel.messages.fetch({
+      limit: 100,
+    });
+    let messageNumber = 0;
+    fetched.map((msg, index) => {
+      messageNumber = messageNumber + 1;
+      if (msg.author.id === client.user?.id) {
+        if (msg.deletable) msg.delete();
+      }
+    });
   });
-  player.on("queueEnd", (queue: any) => {
+  player.on("queueEnd", async (queue: any) => {
     // //queue.metadata.channel.send(`🎶 | Queue has ended!`)
-    // const channel = queue.metadata.channel as TextChannel;
+    const channel = queue.metadata.channel as TextChannel;
+    channel.send(`🎶 | Queue has ended!`);
+    const fetched = await channel.messages.fetch({
+      limit: 100,
+    });
+    let messageNumber = 0;
+    fetched.map((msg, index) => {
+      messageNumber = messageNumber + 1;
+      if (msg.author.id === client.user?.id) {
+        if (msg.deletable) msg.delete();
+      }
+    });
     // channel.send(`🎶 | Queue has ended!`);
   });
   player.on("error", (queue: any, error) => {

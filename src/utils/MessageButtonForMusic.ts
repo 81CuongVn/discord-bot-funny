@@ -1,59 +1,72 @@
-import { MessageActionRow, MessageButton } from "discord.js";
+import {
+  ButtonInteraction,
+  CacheType,
+  MessageActionRow,
+  MessageButton,
+  SelectMenuInteraction,
+} from "discord.js";
 import { ButtonId } from "./../types/ButtonId";
 
-export enum MessageButtonDisabled {
-  None = "none",
-  SkipMusic = "skipMusic",
-  PauseMusic = "pauseMusic",
-  ResumeMusic = "resumeMusic",
-  StopMusic = "stopMusic",
-  TurnOnRepeatMusic = "turnOnRepeatMusic",
-  TurnOffRepeatMusic = "turnOffRepeatMusic",
-}
+export const getMessageButtonForMusic = (
+  disabled: string[],
+  interaction: SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>
+) => {
+  const allRow: MessageActionRow[] = [];
+  const button = getButton();
+  let pair = [],
+    pair3 = [];
 
-export const getMessageButtonForMusic = (disabled: MessageButtonDisabled[]) => {
-  const row = new MessageActionRow();
-  row.addComponents(
+  for (let i = 0; i <= button.length; i++) {
+    pair3.push(button[i]);
+    if ((i + 1) % 5 == 0) {
+      pair.push(pair3);
+      pair3 = [];
+    }
+  }
+  pair.map((rows, index) => {
+    const row = new MessageActionRow();
+    rows.map((button, index) => {
+      if (button.customId) {
+        if (disabled.includes(button.customId)) {
+          button.setDisabled(true);
+        }
+        row.addComponents(button);
+      }
+    });
+    allRow.push(row);
+  });
+  return allRow;
+};
+export const getButton = () => {
+  return [
     new MessageButton()
       .setCustomId(ButtonId.SkipMusic)
       .setLabel("bỏ qua bài hát")
       .setEmoji("⏭️")
-      .setStyle("PRIMARY")
-      .setDisabled(disabled.includes(MessageButtonDisabled.SkipMusic)),
-  );
-  row.addComponents(
+      .setStyle("PRIMARY"),
+
     new MessageButton()
       .setCustomId(ButtonId.PauseMusic)
       .setLabel("tạm dừng bài hát")
       .setEmoji("⏸")
-      .setStyle("PRIMARY").setDisabled(disabled.includes(MessageButtonDisabled.PauseMusic)),
-  );
-  row.addComponents(
+      .setStyle("PRIMARY"),
+
     new MessageButton()
       .setCustomId(ButtonId.ResumeMusic)
       .setEmoji("⏯")
       .setLabel("tiếp tục bài hát")
-      .setStyle("PRIMARY").setDisabled(disabled.includes(MessageButtonDisabled.ResumeMusic)),
-  );
-  row.addComponents(
+      .setStyle("PRIMARY"),
+
     new MessageButton()
       .setCustomId(ButtonId.StopMusic)
       .setLabel("dừng phát nhạc")
       .setEmoji("⏹")
-      .setStyle("PRIMARY").setDisabled(disabled.includes(MessageButtonDisabled.StopMusic)),
-  );
-  //   row.addComponents(
-  //     new MessageButton()
-  //       .setLabel("lặp lại bài hát hiện tại (thuộc lệnh lặp lại)")
-  //       .setCustomId(ButtonId.TurnOnRepeatMusic)
-  //       .setEmoji("⏯")
-  //   );
-  //   row.addComponents(
-  //     new MessageButton()
-  //       .setLabel("tắt lệnh lặp lại")
-  //       .setEmoji("⏹")
-  //       .setCustomId(ButtonId.TurnOffRepeatMusic)
-  //   );
+      .setStyle("PRIMARY"),
 
-  return row;
+    new MessageButton()
+      .setLabel("loop")
+      .setCustomId(ButtonId.loopMusic)
+      .setEmoji("➡️")
+      .setStyle("PRIMARY"),
+  ];
 };
