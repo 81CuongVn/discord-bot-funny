@@ -12,11 +12,11 @@ export default function getCommands(client: IClient) {
   const commandFolder = fs.readdirSync(
     path.join(__dirname, `${slashCommandDir}/`)
   );
-  for (const folder of commandFolder) {
+  commandFolder.forEach((folder) => {
     console.log(folder);
     const folderPath = path.join(__dirname, `${slashCommandDir}`, folder);
     const files = fs.readdirSync(folderPath);
-    for (const file of files) {
+    files.forEach((file) => {
       const fileName = path.join(
         __dirname,
         `${slashCommandDir}/`,
@@ -37,8 +37,8 @@ export default function getCommands(client: IClient) {
       } else {
         data.push([file, "forgot to export default or something"]); //${folder}/
       }
-    }
-  }
+    });
+  });
   client.slashCommandObject = arrayOfCommands;
   console.log("slash command đã được load xong :)");
   console.log(table(data));

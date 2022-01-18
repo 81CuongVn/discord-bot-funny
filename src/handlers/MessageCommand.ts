@@ -6,12 +6,12 @@ var dataLog = [["filename", "status"]];
 
 const MessageCommandHandler = (client: IClient) => {
   var dirMain = readdirSync(path.join(__dirname, "../commands/"));
-  for (const dir of dirMain) {
+  dirMain.forEach((dir) => {
     console.log(dir);
     var commands = readdirSync(
       path.join(__dirname, `../commands/${dir}/`)
     ).filter((file) => file.endsWith(".ts"));
-    for (var file of commands) {
+    for (const file of commands) {
       const pathToFile = path.join(__dirname, `../commands/${dir}/${file}`);
       var pull = require(pathToFile).default;
       if (pull?.name) {
@@ -28,7 +28,7 @@ const MessageCommandHandler = (client: IClient) => {
         });
       }
     }
-  }
+  });
 
   console.log("message command handlers đã được load xong");
   console.log(table(dataLog));
