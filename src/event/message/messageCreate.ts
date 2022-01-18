@@ -13,14 +13,7 @@ export const MessageCreateHandler = async (
 
     // get guild id
     const guildId = message.guild?.id;
-    if (!guildId) return;
-    if (guildId) {
-      if (client.slashCommandObject) {
-        await client.guilds.cache
-          .get(guildId)
-          ?.commands.set(client.slashCommandObject);
-      }
-    }
+    
     const botChatChannel = await BotChatChannelModel.findOne({
       serverId: guildId,
     });

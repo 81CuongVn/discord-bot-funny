@@ -17,6 +17,17 @@ const onClientReady = async(client: IClient) => {
     `invite me | watching ${serverCount} users`,
   ]
   let lastStatus = 0;
+  client.guilds.cache.map(async(guild) => {
+    const guildId = guild.id;
+    if (!guildId) return;
+    if (guildId) {
+      if (client.slashCommandObject) {
+        await client.guilds.cache
+          .get(guildId)
+          ?.commands.set(client.slashCommandObject);
+      }
+    }
+  });
   setInterval(() => {
 
     const status = activity[Math.floor(lastStatus)];

@@ -37,8 +37,8 @@ export default {
       });
       return;
     }
-
-    queue.stop();
+    console.log(queue.destroyed);
+    if (!queue.destroyed) queue.stop();
     interaction.update({
       content: "Bot đã dừng phát nhạc",
       embeds: [],
