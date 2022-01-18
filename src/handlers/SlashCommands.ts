@@ -13,7 +13,6 @@ export default function getCommands(client: IClient) {
     path.join(__dirname, `${slashCommandDir}/`)
   );
   commandFolder.forEach((folder) => {
-    console.log(folder);
     const folderPath = path.join(__dirname, `${slashCommandDir}`, folder);
     const files = fs.readdirSync(folderPath);
     files.forEach((file) => {
@@ -30,7 +29,6 @@ export default function getCommands(client: IClient) {
         } else {
           command.name = command.name.toLocaleLowerCase();
           client.slashCommand?.set(command.name, fileName);
-          console.log(fileName);
           data.push([file, "☑ ok"]); //${folder}/
           arrayOfCommands.push(command);
         }

@@ -10,10 +10,9 @@ export const MessageCreateHandler = async (
 ) => {
   try {
     if (message.author.bot) return;
-
     // get guild id
     const guildId = message.guild?.id;
-    
+
     const botChatChannel = await BotChatChannelModel.findOne({
       serverId: guildId,
     });
@@ -53,6 +52,11 @@ export const MessageCreateHandler = async (
       );
       const response = await axios.get(apiUrl);
       const data = response.data;
+      const reply:string = data.cnt;
+      if (!data.cnt || reply.trim().length === 0) {
+        return;
+      }
+      
       message.reply(data.cnt);
     }
   } catch (e) {

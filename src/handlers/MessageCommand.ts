@@ -7,7 +7,6 @@ var dataLog = [["filename", "status"]];
 const MessageCommandHandler = (client: IClient) => {
   var dirMain = readdirSync(path.join(__dirname, "../commands/"));
   dirMain.forEach((dir) => {
-    console.log(dir);
     var commands = readdirSync(
       path.join(__dirname, `../commands/${dir}/`)
     ).filter((file) => file.endsWith(".ts"));
@@ -16,7 +15,6 @@ const MessageCommandHandler = (client: IClient) => {
       var pull = require(pathToFile).default;
       if (pull?.name) {
         client.commands?.set(pull.name, pull);
-        console.log(pathToFile);
         dataLog.push([file, "☑ file status is good"]);
       } else {
         dataLog.push([file, " thieu name"]);

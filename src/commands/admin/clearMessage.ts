@@ -36,7 +36,11 @@ export default {
           messageNumber = messageNumber + 1
         if (msg.deletable) msg.delete();
       });
-      message.channel.send(`Đã xóa ${messageNumber} tin nhắn`);
+      let botMessageSend = await message.channel.send(`đang xóa ${messageNumber} tin nhắn`);
+      setTimeout(() => {
+        botMessageSend.react("✅");
+        botMessageSend.edit({content : `đã xóa ${messageNumber} tin nhắn`, embeds: []});
+      }, 3000);
     } catch (error) {
       console.log(error);
       message.channel.send(`bot xảy ra lỗi vui lòng thử lại sau`);

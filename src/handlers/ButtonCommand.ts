@@ -12,7 +12,6 @@ export default function getCommands(client: IClient) {
     path.join(__dirname, `${slashCommandDir}/`)
   );
   commandFolder.forEach((folder) => {
-    console.log(folder);
     const folderPath = path.join(__dirname, `${slashCommandDir}`, folder);
     const files = fs.readdirSync(folderPath);
     files.forEach((file) => {
@@ -27,7 +26,6 @@ export default function getCommands(client: IClient) {
         if (!command?.name) {
           data.push([file, "missing name"]); //${folder}/
         } else {
-          console.log(fileName);
           data.push([file, "☑ ok"]); //${folder}/
           client.buttonCommand?.set(command.name, fileName);
         }
