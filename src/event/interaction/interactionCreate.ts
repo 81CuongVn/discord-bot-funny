@@ -22,6 +22,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
         interaction.reply({ content: "Không tìm thấy lệnh này" });
         return;
       }
+      console.log(cmd);
       cmd = require(cmd).default;
       if (!cmd || typeof cmd === "string") {
         interaction.reply({ content: "Không tìm thấy lệnh này" });

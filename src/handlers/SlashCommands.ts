@@ -29,7 +29,7 @@ export default function getCommands(client: IClient) {
           data.push([file, "missing name"]); //${folder}/
         } else {
           command.name = command.name.toLocaleLowerCase();
-          client.slashCommand?.set(command.name, command);
+          client.slashCommand?.set(command.name, fileName);
           console.log(fileName);
           data.push([file, "☑ ok"]); //${folder}/
           arrayOfCommands.push(command);
