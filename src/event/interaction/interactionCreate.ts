@@ -4,28 +4,40 @@ import {
   MessageButton,
   MessageEmbed,
 } from "discord.js";
-import {
-  getMessageButtonForMusic,
-} from "../../utils/MessageButtonForMusic";
+import { getMessageButtonForMusic } from "../../utils/MessageButtonForMusic";
 import { getVoiceChannel } from "../../utils/checkSameRoom";
 import { IClient } from "./../../types/index";
 import { MenuId } from "./../../types/MenuId";
 import { checkSameRoom } from "./../../utils/checkSameRoom";
 import { ButtonId } from "./../../types/ButtonId";
+import { IButtonCommandHandlers } from "./../../types/buttonCommands";
+import { ISlashCommandHandlers } from "src/types/slashCommand";
 
 const interactionCreate = async (interaction: Interaction, client: IClient) => {
   try {
     if (interaction.isCommand()) {
-      const cmd = client.slashCommand?.get(interaction.commandName);
+      let cmd: string | undefined | ISlashCommandHandlers =
+        client.slashCommand?.get(interaction.commandName);
       if (!cmd || cmd == undefined) {
+        interaction.reply({ content: "Không tìm thấy lệnh này" });
+        return;
+      }
+      cmd = require(cmd).default;
+      if (!cmd || typeof cmd === "string") {
         interaction.reply({ content: "Không tìm thấy lệnh này" });
         return;
       }
       cmd.run(client, interaction, interaction.options);
     }
     if (interaction.isButton()) {
-      const cmd = client.buttonCommand?.get(interaction.customId);
+      let cmd: string | undefined | IButtonCommandHandlers =
+        client.buttonCommand?.get(interaction.customId);
       if (!cmd || cmd == undefined) {
+        interaction.update({ content: "Không tìm thấy lệnh này" });
+        return;
+      }
+      cmd = require(cmd).default;
+      if (!cmd || typeof cmd === "string") {
         interaction.update({ content: "Không tìm thấy lệnh này" });
         return;
       }
@@ -70,9 +82,10 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           });
           return;
         }
-        const row = getMessageButtonForMusic([
-          ButtonId.ResumeMusic,
-        ],interaction);
+        const row = getMessageButtonForMusic(
+          [ButtonId.ResumeMusic],
+          interaction
+        );
         const embed = new MessageEmbed()
           .setTitle(track.title)
           .setURL(track.url)

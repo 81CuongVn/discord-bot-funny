@@ -29,7 +29,7 @@ export default function getCommands(client: IClient) {
         } else {
           console.log(fileName);
           data.push([file, "☑ ok"]); //${folder}/
-          client.buttonCommand?.set(command.name, command);
+          client.buttonCommand?.set(command.name, fileName);
         }
       } else {
         data.push([file, "forgot to export default or something"]); //${folder}/

@@ -6,10 +6,10 @@ import { IButtonCommandHandlers } from './buttonCommands';
 
 export interface IClient extends Client<boolean> {
   UserCreatBotId?: string;
-  slashCommand?: Collection<string, ISlashCommandHandlers>;
+  slashCommand?: Collection<string, string>;// chút import vào rồi dùng
   slashCommandObject?: any;
   player?: Player;
-  buttonCommand?: Collection<string, IButtonCommandHandlers>;
+  buttonCommand?: Collection<string, string>;// chút import vào rồi dùng
   commands?: Collection<string, IMessageCommandHandlers>;
   aliases?: Collection<string, string>;
   categories?: string[];

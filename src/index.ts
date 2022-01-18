@@ -14,6 +14,10 @@ server.get("/", (req: express.Request, res: express.Response) => {
 
 server.disable("x-powered-by");
 server.listen(port, () => {
-  bot();
+  try {
+    bot();
+  } catch (e) {
+    console.log(e);
+  }
   console.log(`🚀 Server is running on port ${port} ✨`);
 });
