@@ -4,7 +4,7 @@ import { confessionChannelModel } from "../../model/confessionChannelModel";
 
 const confessionChannelHandler: ISlashCommandHandlers = {
   name: "confessionChannel".toLocaleLowerCase(),
-  description: "Bot Chat Channel bot",
+  description: "confession Channel bot",
   usage: "confessionChannel",
   aliases: ["p"],
   options: [
@@ -15,7 +15,7 @@ const confessionChannelHandler: ISlashCommandHandlers = {
       options: [
         {
           name: "add",
-          description: "add bot chat channel",
+          description: "add confession channel",
           type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
           options: [
             {
@@ -28,7 +28,7 @@ const confessionChannelHandler: ISlashCommandHandlers = {
         },
         {
           name: "remove",
-          description: "remove bot chat channel",
+          description: "remove confession channel",
           type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
           options: [],
         },
