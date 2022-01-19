@@ -88,12 +88,18 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           [ButtonId.ResumeMusic],
           interaction
         );
+        let timeQueue = 0;
+        queue.tracks.map((track) => {
+          timeQueue = timeQueue + track.durationMS;
+        });
+        timeQueue = timeQueue + track.durationMS;
+
         const embed = new MessageEmbed()
           .setTitle(track.title)
           .setURL(track.url)
           .setDescription(
             track.description ||
-              `đang chơi nhạc : ${track.title} của : ${track.author} , được yêu cẩu bởi ${track.requestedBy.username} , với thời lượng là ${track.duration} với tổng thời gian là ${track.durationMS}ms tổng thời gian của cả danh sách phát mà bot phát là ${queue.totalTime}ms`
+              `đang chơi nhạc : ${track.title} của : ${track.author} , được yêu cẩu bởi ${track.requestedBy.username} , với thời lượng là ${track.duration} với tổng thời gian là ${track.durationMS}ms tổng thời gian của cả danh sách phát mà bot phát là ${timeQueue}ms`
           )
           .setThumbnail(track.thumbnail)
           .setFooter(
