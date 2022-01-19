@@ -36,7 +36,11 @@ const spamChannelHandler: ISlashCommandHandlers = {
   ],
   run: async (client, interaction, options) => {
     try {
-      if (!interaction.guild?.me?.permissions.has("MANAGE_CHANNELS")) {
+      if (
+        !interaction.guild?.members?.guild.me?.permissions.has(
+          "MANAGE_CHANNELS"
+        )
+      ) {
         interaction.reply({
           content: "Bạn không có quyền thêm vào kênh spam",
           ephemeral: true,

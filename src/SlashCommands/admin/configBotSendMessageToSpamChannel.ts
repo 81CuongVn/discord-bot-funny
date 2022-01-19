@@ -29,7 +29,7 @@ const ConfigBotSendMessageToSpamChannel: ISlashCommandHandlers = {
   ],
   run: async (client, interaction, args) => {
     try {
-      if (!interaction.guild?.me?.permissions.has("MANAGE_MESSAGES")) {
+      if (!interaction.guild?.members?.guild.me?.permissions.has("MANAGE_MESSAGES")) {
         interaction.reply({
           content: "bạn không có quyền dùng lệnh này",
           ephemeral: true,

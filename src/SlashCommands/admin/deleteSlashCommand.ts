@@ -8,7 +8,11 @@ const deleteCommandBotCreateHandler: ISlashCommandHandlers = {
   run: async (client, interaction, args) => {
     try {
       // check user has permission
-      if (!interaction.guild?.me?.permissions.has("MANAGE_CHANNELS")) {
+      if (
+        !interaction.guild?.members?.guild.me?.permissions.has(
+          "MANAGE_CHANNELS"
+        )
+      ) {
         interaction.reply({
           content: "Bạn không có quyền thêm xoá bot command",
           ephemeral: true,
