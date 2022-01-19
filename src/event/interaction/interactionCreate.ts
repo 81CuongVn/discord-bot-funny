@@ -92,7 +92,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           .setURL(track.url)
           .setDescription(
             track.description ||
-              `đang chơi nhạc : ${track.title} của : ${track.author} , được yêu cẩu bởi ${track.requestedBy.username} , với thời lượng là ${track.duration} với tổng thời gian là ${track.durationMS}ms`
+              `đang chơi nhạc : ${track.title} của : ${track.author} , được yêu cẩu bởi ${track.requestedBy.username} , với thời lượng là ${track.duration} với tổng thời gian là ${track.durationMS}ms tổng thời gian của cả danh sách phát mà bot phát là ${queue.totalTime}ms`
           )
           .setThumbnail(track.thumbnail)
           .setFooter(
