@@ -28,14 +28,15 @@ export default {
       .setDescription(confession)
       .setColor("#ff0000")
       .setTimestamp()
-          .setFooter(message.author.username, message.author.displayAvatarURL());
-      console.log(confessionChannel);
-      const channel = client.channels.cache.get(confessionChannel.channelId) as TextChannel;
-      if (!channel) {
-          message.reply("không tìm thấy kênh confession");
-          return;
-        }
-    channel.send({embeds : [embed]});
+      .setFooter(message.author.username, message.author.displayAvatarURL());
+    const channel = client.channels.cache.get(
+      confessionChannel.channelId
+    ) as TextChannel;
+    if (!channel) {
+      message.reply("không tìm thấy kênh confession");
+      return;
+    }
+    channel.send({ embeds: [embed] });
     if (message.deletable) message.delete();
   },
 } as IMessageCommandHandlers;

@@ -10,6 +10,11 @@ export const MessageCreateHandler = async (
 ) => {
   try {
     if (message.author.bot) return;
+    if (message.channel.type === "DM") {
+      console.log("DM", message);
+      message.channel.send("Bạn không thể gửi tin nhắn trong DM");
+      return;
+    }
     // get guild id
     const guildId = message.guild?.id;
 
@@ -52,11 +57,12 @@ export const MessageCreateHandler = async (
       );
       const response = await axios.get(apiUrl);
       const data = response.data;
-      const reply:string = data.cnt;
+      const reply: string = data.cnt;
       if (!data.cnt || reply.trim().length === 0) {
+        await message.reply("Xin lỗi, tôi không hiểu ý bạn");
         return;
       }
-      
+
       message.reply(data.cnt);
     }
   } catch (e) {
