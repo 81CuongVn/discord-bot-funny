@@ -83,6 +83,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           });
           return;
         }
+        queue.play(track);
         const row = getMessageButtonForMusic(
           [ButtonId.ResumeMusic],
           interaction
@@ -100,7 +101,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           )
           .setTimestamp()
           .setImage(track.thumbnail);
-        queue.play(track);
+
         interaction.update({
           content: `Đang chạy bài hát: ${track.title}`,
           components: row,
