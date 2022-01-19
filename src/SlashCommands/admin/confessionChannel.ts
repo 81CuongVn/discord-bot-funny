@@ -48,7 +48,6 @@ const confessionChannelHandler: ISlashCommandHandlers = {
         });
         return;
       }
-
       const action = args.getSubcommand();
       if (action === "add") {
         const channel = interaction.options.getChannel("channel");
@@ -65,35 +64,21 @@ const confessionChannelHandler: ISlashCommandHandlers = {
           serverId,
         });
         if (confessionChannel) {
-          if (confessionChannel.channelId === channel.id) {
-            interaction.reply({
-              content: "channel already added",
-              ephemeral: true,
-            });
-            return;
-          } else {
-            await confessionChannelModel.findOneAndUpdate(
-              { serverId },
-              { channelId: channel.id }
-            );
-            interaction.reply({
-              content: "channel changed channel info in bot database",
-              ephemeral: true,
-            });
-            return;
-          }
-        } else {
-          const newConfessionChannel = new confessionChannelModel({
-            serverId,
-            channelId: channel.id,
-          });
-          await newConfessionChannel.save();
           interaction.reply({
-            content: "channel added to bot database",
+            content: "confession channel already exist",
             ephemeral: true,
           });
           return;
         }
+        const newConfessionChannel = new confessionChannelModel({
+          serverId,
+          channelId: channel.id,
+        });
+        await newConfessionChannel.save();
+        interaction.reply({
+          content: "confession channel added",
+          ephemeral: true,
+        });
       } else if (action === "remove") {
         const serverId = interaction.guild?.id;
         const confessionChannel = await confessionChannelModel.findOne({
@@ -101,19 +86,16 @@ const confessionChannelHandler: ISlashCommandHandlers = {
         });
         if (!confessionChannel) {
           interaction.reply({
-            content: "channel not found",
+            content: "confession channel not found",
             ephemeral: true,
           });
           return;
         }
-        await confessionChannelModel.findOneAndDelete({
-          serverId,
-        });
+        await confessionChannelModel.findOneAndDelete({ serverId });
         interaction.reply({
-          content: "channel removed from bot database",
+          content: "confession channel removed",
           ephemeral: true,
         });
-        return;
       }
     } catch (error) {
       console.log(error);

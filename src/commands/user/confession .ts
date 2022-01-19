@@ -9,10 +9,10 @@ export default {
   aliases: ["confession"],
   usage: "confession <confession>",
   run: async (client, message, args) => {
-      try {
+    try {
       if (!message.guild) return;
-      const confessionChannel = await confessionChannelModel.findOne({
-        guildId: message.guild?.id,
+      let confessionChannel = await confessionChannelModel.findOne({
+        serverId: message.guild?.id,
       });
       if (!confessionChannel) {
         message.reply("không có confession channel nào ");
