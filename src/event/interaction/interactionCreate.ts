@@ -12,6 +12,7 @@ import { checkSameRoom } from "./../../utils/checkSameRoom";
 import { ButtonId } from "./../../types/ButtonId";
 import { IButtonCommandHandlers } from "./../../types/buttonCommands";
 import { ISlashCommandHandlers } from "src/types/slashCommand";
+import { SearchResult } from "distube";
 
 const interactionCreate = async (interaction: Interaction, client: IClient) => {
   try {
@@ -65,51 +66,43 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           });
           return;
         }
-        const queue = client.player?.getQueue(interaction.guild);
-        const track = (
-          await client.player?.search(interaction.values[0], {
-            requestedBy: interaction.user,
-          })
-        )?.tracks[0];
+        const urlVideo = interaction.values[0];
+        let track: SearchResult[] | undefined | SearchResult =
+          await client.disTube?.search(urlVideo, {
+            limit: 1,
+            type: "video",
+            safeSearch: true,
+          });
+
         if (!track) {
           interaction.update({
             content: "Không tìm thấy bài hát",
           });
           return;
         }
-        if (!queue) {
-          interaction.update({
-            content: "Bot chưa được thêm vào queue",
-          });
-          return;
-        }
-        queue.play(track);
+        track = track[0];
         const row = getMessageButtonForMusic(
           [ButtonId.ResumeMusic],
           interaction
         );
-        let timeQueue = 0;
-        queue.tracks.map((track) => {
-          timeQueue = timeQueue + track.durationMS;
-        });
-        timeQueue = timeQueue + track.durationMS;
 
         const embed = new MessageEmbed()
-          .setTitle(track.title)
+          .setTitle(track.name)
           .setURL(track.url)
           .setDescription(
-            track.description ||
-              `đang chơi nhạc : ${track.title} của : ${track.author} , được yêu cẩu bởi ${track.requestedBy.username} , với thời lượng là ${track.duration} với tổng thời gian là ${track.durationMS}ms tổng thời gian của cả danh sách phát mà bot phát là ${timeQueue}ms`
+            `đang chơi nhạc : ${track.name} của : ${track.source} , được yêu cẩu bởi ${interaction.user.username} , với thời lượng là ${track.formattedDuration} với tổng thời gian là ${track.duration}ms`
           )
-          .setThumbnail(track.thumbnail)
           .setFooter(
-            `bot được làm ra bởi ngủ , được yêu cầu bởi ${track.requestedBy.username}`
+            `bot được làm ra bởi ngủ , được yêu cầu bởi ${interaction.user.username}`
           )
-          .setTimestamp()
-          .setImage(track.thumbnail);
-
+          .setTimestamp();
+        if (track.thumbnail) {
+          embed.setThumbnail(track.thumbnail);
+          embed.setImage(track.thumbnail);
+        }
+        client.disTube?.play(voiceChannel, track.url);
         interaction.update({
-          content: `Đang chạy bài hát: ${track.title}`,
+          content: `Đang chạy bài hát: ${track.name}`,
           components: row,
           embeds: [embed],
         });

@@ -14,7 +14,10 @@ const checkUserSpam = async (message: Message, client: IClient) => {
         .slice(1);
       let mustDelete = false;
       AllMessage.map((m) => {
-        if (m.content === message.content && m.author.id === message.author.id) {
+        if (
+          m.content === message.content &&
+          m.author.id === message.author.id
+        ) {
           mustDelete = true;
         }
       });

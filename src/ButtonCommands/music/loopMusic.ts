@@ -7,6 +7,7 @@ import { IButtonCommandHandlers } from "../../types/buttonCommands";
 import { ButtonId } from "../../types/ButtonId";
 import { MessageActionRow } from "discord.js";
 import { QueueRepeatMode } from "discord-player";
+import { RepeatMode } from "distube";
 
 export default {
   name: ButtonId.loopMusic,
@@ -30,14 +31,14 @@ export default {
       });
       return;
     }
-    const queue = client.player?.getQueue(interaction.guild);
+    const queue = client.disTube?.getQueue(interaction.guild);
     if (!queue) {
       interaction.update({
         content: "bot could not join your voice channel!",
       });
       return;
     }
-    if (!queue.connection) {
+    if (!queue?.voice || !queue?.voice.connection || !queue.voiceChannel) {
       interaction.update({
         content: "bot could not join your voice channel!",
       });
@@ -71,8 +72,10 @@ export default {
             button.setDisabled(true);
           }
           if (button.customId === ButtonId.loopMusic) {
-            button.setLabel(queue.repeatMode === QueueRepeatMode.QUEUE ? "loop" : "bỏ loop");
-            button.setEmoji(queue.repeatMode === QueueRepeatMode.QUEUE ? "➡️" : "⏹");
+            button.setLabel(
+              queue.repeatMode === RepeatMode.QUEUE ? "loop" : "bỏ loop"
+            );
+            button.setEmoji(queue.repeatMode === RepeatMode.QUEUE ? "➡️" : "⏹");
             button.setStyle("PRIMARY");
             button.setDisabled(false);
           }
@@ -81,7 +84,11 @@ export default {
       });
       allRow.push(row);
     });
-    queue.setRepeatMode(queue.repeatMode === QueueRepeatMode.QUEUE ? QueueRepeatMode.OFF : QueueRepeatMode.QUEUE);
+    queue.setRepeatMode(
+      queue.repeatMode === RepeatMode.QUEUE
+        ? RepeatMode.DISABLED
+        : RepeatMode.QUEUE
+    );
     interaction.update({
       content: "Bot đã bật chế độ loop",
       components: allRow,

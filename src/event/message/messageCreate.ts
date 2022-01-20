@@ -21,13 +21,7 @@ export const MessageCreateHandler = async (
     const botChatChannel = await BotChatChannelModel.findOne({
       serverId: guildId,
     });
-    try {
-      if (botChatChannel?.channelId !== message.channel.id) {
-        await checkUserSpam(message, client);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+
     const prefix = client.prefix || "!";
     if (message.content.startsWith(prefix)) {
       const args = message.content.slice(prefix.length).trim().split(" ");
@@ -43,6 +37,14 @@ export const MessageCreateHandler = async (
       if (command) {
         command.run(client, message, args);
         return;
+      }
+    } else {
+      try {
+        if (botChatChannel?.channelId !== message.channel.id) {
+          await checkUserSpam(message, client);
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
     const channelId = message.channel.id;

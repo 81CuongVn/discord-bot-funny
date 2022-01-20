@@ -24,21 +24,21 @@ export default {
       });
       return;
     }
-    const queue = client.player?.getQueue(interaction.guild);
+    const queue = client.disTube?.getQueue(interaction.guild);
     if (!queue) {
       interaction.update({
         content: "bot could not join your voice channel!",
       });
       return;
     }
-    if (!queue.connection) {
+    if (!queue?.voice || !queue?.voice.connection || !queue.voiceChannel) {
       interaction.update({
         content: "bot could not join your voice channel!",
       });
       return;
     }
 
-    queue.setPaused(true);
+    queue.pause();
     const row = getMessageButtonForMusic([ButtonId.PauseMusic], interaction);
     interaction.update({
       content: "Bot đã tạm dừng",

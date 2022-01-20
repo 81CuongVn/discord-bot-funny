@@ -31,16 +31,22 @@ export default {
       const fetched = await message.channel.messages.fetch({
         limit: numberMessage,
       });
-        let messageNumber= 0
-        fetched.map((msg, index) => {
-          messageNumber = messageNumber + 1
+      let botMessageSend = await message.channel.send(
+        `đang xóa tin nhắn`
+      );
+      let messageNumber = 0;
+      fetched.map((msg, index) => {
+        messageNumber = messageNumber + 1;
         if (msg.deletable) msg.delete();
+        if (messageNumber == fetched.size) {
+          message.react("✅");
+          botMessageSend.react("✅");
+          botMessageSend.edit({
+            content: `đã xóa ${messageNumber} tin nhắn`,
+            embeds: [],
+          });
+        }
       });
-      let botMessageSend = await message.channel.send(`đang xóa ${messageNumber} tin nhắn`);
-      setTimeout(() => {
-        botMessageSend.react("✅");
-        botMessageSend.edit({content : `đã xóa ${messageNumber} tin nhắn`, embeds: []});
-      }, 3000);
     } catch (error) {
       console.log(error);
       message.channel.send(`bot xảy ra lỗi vui lòng thử lại sau`);
