@@ -100,7 +100,8 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           embed.setThumbnail(track.thumbnail);
           embed.setImage(track.thumbnail);
         }
-        client.disTube?.play(voiceChannel, track.url);
+        client.disTube?.play(voiceChannel, track.url, {
+        });
         interaction.update({
           content: `Đang chạy bài hát: ${track.name}`,
           components: row,

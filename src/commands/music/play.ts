@@ -11,7 +11,7 @@ export default {
   description: "find song for you chose",
   usage: "play",
   aliases: ["p"],
-    category:"music",
+  category: "music",
   run: async (client, message, args) => {
     if (!message.member?.voice.channel) {
       message.reply("bạn đang không ở trong kênh nhạc");
@@ -23,7 +23,7 @@ export default {
       return;
     }
     const video = await client.disTube?.search(musicName, {
-      limit: 10,
+      limit: 6,
       type: "video",
       safeSearch: true,
     });
@@ -34,7 +34,7 @@ export default {
     const options: MessageSelectOptionData[] = [];
     video.forEach((track, index) => {
       options.push({
-        label: `${track.name.slice(0, 20)} ...`,
+        label: `${index} ${track.name}`.slice(0, 20),
         value: track.url,
         description: `thời lượng : ${track.formattedDuration} , số luợt xem : ${track.views}`,
       });
@@ -48,9 +48,16 @@ export default {
         .setMinValues(1)
         .setOptions(options)
     );
+    let description = ``;
+    video.forEach((track, index) => {
+      description += `${index}. ${track.name} thời lượng là ${
+        track.formattedDuration
+      } ${track.views ? `tổng lược xem ${track.views}` : ""} \n`;
+    });
+
     const embed = new MessageEmbed()
       .setTitle("🎵 Chọn bài hát bạn muốn lưu ý")
-      .setDescription(`chỉ được chọn một lần `)
+      .setDescription(description)
       .setColor("#00ff00")
       .setFooter(
         "được làm bởi: ngủ ; người yêu cầu :" + message.author.username

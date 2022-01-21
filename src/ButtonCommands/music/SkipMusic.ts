@@ -37,7 +37,6 @@ export default {
       });
       return;
     }
-    queue.skip();
     if (!queue.autoplay && queue.songs.length <= 1) {
       queue.stop();
       interaction.update({

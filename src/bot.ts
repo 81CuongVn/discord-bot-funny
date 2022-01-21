@@ -23,16 +23,19 @@ export const bot = () => {
   });
   const player = new DisTube(client, {});
   player.on("addSong", (queue, song) => {
+    console.log(`${song.name} has been added to the queue` , queue.textChannel);
     queue.textChannel?.send(
       `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}.`
     );
   });
   player.on("playSong", (queue, song) => {
+    console.log(`Now playing ${song.name}` , queue.textChannel);
     queue.textChannel?.send(
       `Now playing ${song.name} - \`${song.formattedDuration}\` by ${song.user}.`
     );
   });
   player.on("finish", (queue) => {
+    console.log("Finished playing the queue" , queue.textChannel);
     queue.textChannel?.send("The queue has finished.");
   });
   client.disTube = player;
@@ -59,6 +62,7 @@ export const bot = () => {
   client.on("interactionCreate", async (interaction) => {
     await interactionCreate(interaction, client);
   });
+
 
   const token = process.env.BOT_KEY;
   client.login(token);
