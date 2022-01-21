@@ -22,7 +22,7 @@ export default {
         return;
       }
       const code = args.join(" ").replace(/```/g, " ");
-      const result = eval(code);
+      const result = await eval(code);
       const embed = new MessageEmbed()
         .setColor("#0099ff")
         .setTitle("code")
@@ -35,7 +35,7 @@ export default {
       message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.log(error);
-      message.channel.send(`bot xảy ra lỗi vui lòng thử lại sau`);
+      message.channel.send(`code có lỗi ${error}`);
     }
   },
 } as IMessageCommandHandlers;
