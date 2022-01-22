@@ -21,6 +21,10 @@ export default {
       userId: memberId,
       serverId: message.guild?.id,
     });
+    embed.setTitle(`Rank của ${member?.user.tag}`);
+    embed.setDescription(`
+        lưu ý rank được tính từ lúc bot vào server và không tính lúc bot offline vì update
+      `);
     if (!UserRank) {
       const newUserRank = new xpUserModel({
         userId: memberId,
@@ -29,7 +33,6 @@ export default {
         serverId: message.guild?.id,
       });
       newUserRank.save();
-      embed.setTitle(`${member?.user.username}`);
       embed.addField("Rank", `0`, true);
       embed.addField("Level", `0`, true);
       embed.addField("Xp", `0`, true);
@@ -38,7 +41,6 @@ export default {
     } else {
       const level = Math.round(UserRank.xpMessage / xpForOneLevel);
       const rank = Math.round(UserRank.xpMessage / xpForOneRank);
-      embed.setTitle(`${member?.user.username}`);
       embed.addField("Rank", `${rank}`, true);
       embed.addField("Level", `${level}`, true);
       embed.addField("XP", `${UserRank.xpMessage}`, true);

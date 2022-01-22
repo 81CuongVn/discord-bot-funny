@@ -24,6 +24,16 @@ export class xpUser {
     default: 0,
   })
   xpAnswer: number;
+  @prop({
+    required: true,
+    default: 0,
+  })
+  totalMessage: number;
+  @prop({
+    required: true,
+    default: 0,
+  })
+  totalCharacter: number;
 }
 
 export const xpUserModel = getModelForClass(xpUser);

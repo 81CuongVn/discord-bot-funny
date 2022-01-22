@@ -45,7 +45,6 @@ export default async function xpMessage(message: Message, client: IClient) {
   });
 
   if (lastXpInDatabase) {
-    console.log(lastXpInDatabase?.xpMessage + xpFinal);
     await xpUserModel.findOneAndUpdate(
       {
         _id: lastXpInDatabase._id,
@@ -53,6 +52,8 @@ export default async function xpMessage(message: Message, client: IClient) {
       },
       {
         xpMessage: lastXpInDatabase.xpMessage + xpFinal,
+        totalMessage: lastXpInDatabase.totalMessage + 1,
+        totalCharacter: lastXpInDatabase.totalCharacter + message.content.length,
       }
     );
   } else {
@@ -61,6 +62,8 @@ export default async function xpMessage(message: Message, client: IClient) {
       xpMessage: xpFinal,
       xpAnswer: 0,
       serverId: serverId,
+      totalMessage: 1,
+      totalCharacter: message.content.length,
     });
     await newXpUser.save();
   }
