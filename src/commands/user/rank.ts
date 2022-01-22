@@ -38,13 +38,13 @@ export default {
       embed.addField("Xp", `0`, true);
       embed.setColor("RANDOM");
     } else {
-      const level = Math.round(UserRank.xpMessage / xpForOneLevel);
-      const rank = Math.round(UserRank.xpMessage / xpForOneRank);
+      const level = Math.floor(UserRank.xpMessage / xpForOneLevel);
+      const rank = Math.floor(UserRank.xpMessage / xpForOneRank);
       embed.addField("Rank", `${rank}`, true);
       embed.addField("Level", `${level}`, true);
       embed.addField("XP", `${UserRank.xpMessage}`, true);
       embed.setColor("RANDOM");
     }
-    message.channel.send({ embeds: [embed] ,tts:true}); 
+    message.channel.send({ embeds: [embed] }); 
   },
 } as IMessageCommandHandlers;
