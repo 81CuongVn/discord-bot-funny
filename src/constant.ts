@@ -1,1 +1,2 @@
-export const xpForOneLevel = 200;
+export const xpForOneRank = 1000;
+export const xpForOneLevel = 10000;

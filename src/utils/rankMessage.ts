@@ -38,19 +38,29 @@ export default async function xpMessage(message: Message, client: IClient) {
   if (message.content.length <= 0) {
     xp = xp + 0.01;
   }
-  const addPoint = Math.floor(Math.random() * 100) + 1;
+  const addPoint = Math.round(Math.random() * 100) + 1;
   const xpFinal = xp + addPoint;
   const lastXpInDatabase = await xpUserModel.findOne({
     userId: message.author.id,
+    serverId: message.guild?.id,
   });
+  const serverId = message.guild?.id;
   if (lastXpInDatabase) {
-    await xpUserModel.findByIdAndUpdate(lastXpInDatabase._id, {
-      xp: lastXpInDatabase.xpMessage + xpFinal,
-    });
+    await xpUserModel.findOneAndUpdate(
+      {
+        _id: lastXpInDatabase._id,
+        serverId: serverId,
+      },
+      {
+        xp: lastXpInDatabase.xpMessage + xpFinal,
+      }
+    );
   } else {
     const newXpUser = new xpUserModel({
       userId: message.author.id,
-      xp: xpFinal,
+      xpMessage: xpFinal,
+      xpAnswer: 0,
+      serverId: serverId,
     });
     await newXpUser.save();
   }
