@@ -5,7 +5,7 @@ import { getModelForClass, prop, modelOptions } from "@typegoose/typegoose";
     timestamps: true,
   },
 })
-export class RankUser {
+export class xpUser {
   @prop({
     required: true,
   })
@@ -18,12 +18,12 @@ export class RankUser {
     required: true,
     default: 0,
   })
-  rankMessage: number;
+  xpMessage: number;
   @prop({
     required: true,
     default: 0,
   })
-  rankAnswer: number;
+  xpAnswer: number;
 }
 
-export const RankUserModel = getModelForClass(RankUser);
+export const xpUserModel = getModelForClass(xpUser);

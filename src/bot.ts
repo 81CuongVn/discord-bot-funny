@@ -1,4 +1,4 @@
-import { Collection, TextChannel } from "discord.js";
+import { Collection, GuildTextBasedChannel, TextChannel } from "discord.js";
 import { Client, Intents } from "discord.js";
 import dotenv from "dotenv";
 import { readdirSync } from "fs";
@@ -23,20 +23,31 @@ export const bot = () => {
   });
   const player = new DisTube(client, {});
   player.on("addSong", (queue, song) => {
-    console.log(`${song.name} has been added to the queue` , queue.textChannel);
     queue.textChannel?.send(
       `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}.`
     );
   });
   player.on("playSong", (queue, song) => {
-    console.log(`Now playing ${song.name}` , queue.textChannel);
     queue.textChannel?.send(
       `Now playing ${song.name} - \`${song.formattedDuration}\` by ${song.user}.`
     );
   });
-  player.on("finish", (queue) => {
-    console.log("Finished playing the queue" , queue.textChannel);
+  player.on("finish", async (queue) => {
+    if (queue.textChannel) {
+      // delete bot Message
+      const botMessage = await queue.textChannel.messages.fetch({
+        limit: 100,
+      });
+      if (botMessage.size > 0) {
+        botMessage.map((m) => {
+          if (m.author.bot && m.author.id === client.user?.id) {
+            m.delete();
+          }
+        });
+      }
+    }
     queue.textChannel?.send("The queue has finished.");
+    queue.stop();
   });
   client.disTube = player;
 
@@ -62,7 +73,6 @@ export const bot = () => {
   client.on("interactionCreate", async (interaction) => {
     await interactionCreate(interaction, client);
   });
-
 
   const token = process.env.BOT_KEY;
   client.login(token);

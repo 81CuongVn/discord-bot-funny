@@ -1,4 +1,6 @@
 import {
+  BaseGuildTextChannel,
+  GuildTextBasedChannel,
   Interaction,
   MessageActionRow,
   MessageButton,
@@ -100,7 +102,16 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           embed.setThumbnail(track.thumbnail);
           embed.setImage(track.thumbnail);
         }
+
         client.disTube?.play(voiceChannel, track.url, {
+          textChannel: (await client.channels.fetch(
+            interaction.channelId
+          )) as GuildTextBasedChannel,
+          metadata: {
+            channel: voiceChannel,
+            textChannelId: interaction.channelId,
+            interactionId: interaction.id,
+          }
         });
         interaction.update({
           content: `Đang chạy bài hát: ${track.name}`,

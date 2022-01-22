@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import { IClient } from "src/types";
 import checkUserSpam from "../../utils/CheckSpamMessage";
 import { BotChatChannelModel } from "../../model/BotChatChannelModel";
+import xpMessage from "../../utils/rankMessage";
 
 export const MessageCreateHandler = async (
   message: Message,
@@ -47,6 +48,9 @@ export const MessageCreateHandler = async (
         console.log(error);
       }
     }
+
+    await xpMessage(message, client);
+
     const channelId = message.channel.id;
     if (!botChatChannel) {
       return;

@@ -1,1 +1,1 @@
-export const rankForOneLevel = 200
+export const xpForOneLevel = 200;
