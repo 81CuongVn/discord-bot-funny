@@ -49,7 +49,6 @@ const dataExportSearchGoogle: IMessageCommandHandlers = {
       embed.setThumbnail(await page.mainImage());
       embed.setTimestamp();
       embed.setImage(await page.mainImage());
-      console.log(await page.mainImage());
 
       message.channel.send({ embeds: [embed] });
     } catch (error) {

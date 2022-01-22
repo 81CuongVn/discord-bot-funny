@@ -37,7 +37,6 @@ export default {
       embed.addField("Level", `0`, true);
       embed.addField("Xp", `0`, true);
       embed.setColor("RANDOM");
-      message.channel.send({ embeds: [embed] });
     } else {
       const level = Math.round(UserRank.xpMessage / xpForOneLevel);
       const rank = Math.round(UserRank.xpMessage / xpForOneRank);
@@ -45,7 +44,7 @@ export default {
       embed.addField("Level", `${level}`, true);
       embed.addField("XP", `${UserRank.xpMessage}`, true);
       embed.setColor("RANDOM");
-      message.channel.send({ embeds: [embed] });
     }
+    message.channel.send({ embeds: [embed] ,tts:true}); 
   },
 } as IMessageCommandHandlers;

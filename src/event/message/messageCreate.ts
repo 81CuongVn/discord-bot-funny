@@ -61,14 +61,16 @@ export const MessageCreateHandler = async (
       const apiUrl = encodeURI(
         `http://api.brainshop.ai/get?bid=162827&key=${process.env.chatBotApiKey}&uid=${message.author.id}&msg=${messagesContent}`
       );
-      const response = await axios.get(apiUrl);
+      const response = await axios.get(apiUrl, {
+        timeout: 10000,
+      });
       const data = response.data;
       const reply: string = data.cnt;
+      console.log(data);
       if (!data.cnt || reply.trim().length === 0) {
         await message.reply("Xin lỗi, tôi không hiểu ý bạn");
         return;
       }
-
       message.reply(data.cnt);
     }
   } catch (e) {
