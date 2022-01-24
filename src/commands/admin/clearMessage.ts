@@ -20,33 +20,23 @@ export default {
         message.channel.send("Số lượng tin nhắn phải là số");
         return;
       }
-      if (numberMessage < 1) {
+      if (numberMessage <= 0) {
         message.channel.send("Số lượng tin nhắn phải lớn hơn 0");
         return;
       }
-      if (numberMessage > 100) {
-        message.channel.send("Số lượng tin nhắn phải nhỏ hơn 100");
+      if (message.channel.type === "DM") {
+        message.channel.send("Không thể xoá tin nhắn trong DM");
         return;
       }
-      const fetched = await message.channel.messages.fetch({
-        limit: numberMessage,
-      });
-      let botMessageSend = await message.channel.send(
-        `đang xóa tin nhắn`
-      );
-      let messageNumber = 0;
-      fetched.map((msg, index) => {
-        messageNumber = messageNumber + 1;
-        if (msg.deletable) msg.delete();
-        if (messageNumber == fetched.size) {
-          message.react("✅");
-          botMessageSend.react("✅");
-          botMessageSend.edit({
-            content: `đã xóa ${messageNumber} tin nhắn`,
-            embeds: [],
-          });
-        }
-      });
+      const { size } = await message.channel.bulkDelete(numberMessage);
+      message.channel
+        .send(`Đã xoá ${size} tin nhắn trong ${message.channel.name}`)
+        .then((msg) => {
+          msg.react("✅");
+          setTimeout(() => {
+            msg.delete();
+          }, 10000);
+        });
     } catch (error) {
       console.log(error);
       message.channel.send(`bot xảy ra lỗi vui lòng thử lại sau`);
