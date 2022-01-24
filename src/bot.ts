@@ -8,7 +8,6 @@ import interactionCreate from "./event/interaction/interactionCreate";
 import onClientReady from "./event/ready";
 import { MessageCreateHandler } from "./event/message/messageCreate";
 
-import { Player } from "discord-player";
 import { DisTube, Song } from "distube";
 export const bot = () => {
   dotenv.config({ path: path.join(__dirname, "./.env") });
@@ -20,6 +19,7 @@ export const bot = () => {
       Intents.FLAGS.GUILD_VOICE_STATES,
       Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
     ],
+    partials: ["MESSAGE", "CHANNEL", "REACTION"],
   });
   const player = new DisTube(client, {});
   player.on("addSong", (queue, song) => {
