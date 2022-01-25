@@ -12,6 +12,7 @@ export default {
   usage: "play",
   aliases: ["p"],
   category: "music",
+  permission: [],
   run: async (client, message, args) => {
     if (!message.member?.voice.channel) {
       message.reply("bạn đang không ở trong kênh nhạc");

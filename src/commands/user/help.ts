@@ -9,6 +9,7 @@ const helpController: IMessageCommandHandlers = {
   aliases: ["h"],
   description: "hỗ trợ sử dụng lệnh",
   usage: "help [command]",
+  permission: [],
   run: async (client: IClient, message: Message, args: string[]) => {
     try {
       if (!args[0]) {

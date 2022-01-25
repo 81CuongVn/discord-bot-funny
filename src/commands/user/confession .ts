@@ -8,6 +8,7 @@ export default {
   category: "user",
   aliases: ["confession"],
   usage: "confession <confession>",
+  permission: [],
   run: async (client, message, args) => {
     try {
       if (!message.guild) return;

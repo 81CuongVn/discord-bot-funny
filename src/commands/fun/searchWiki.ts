@@ -14,6 +14,7 @@ const dataExportSearchGoogle: IMessageCommandHandlers = {
   aliases: ["find", "search"],
   description: "Tìm kiếm trên wiki",
   usage: "searchWiki <từ khóa>",
+  permission:[],
   run: async (client: Client<boolean>, message: Message, args: string[]) => {
     try {
       let searchKey = args.join(" ");

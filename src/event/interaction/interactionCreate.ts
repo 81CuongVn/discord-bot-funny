@@ -49,15 +49,16 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
     }
     if (interaction.isSelectMenu()) {
       if (interaction.customId === MenuId.playSongMenu) {
+        // await interaction.deferUpdate();
         const voiceChannel = getVoiceChannel(interaction, client);
         if (!voiceChannel) {
-          interaction.update({
+          await interaction.update({
             content: "Bạn phải ở trong voice channel",
           });
           return;
         }
         if (!(await checkSameRoom(interaction, voiceChannel))) {
-          interaction.update({
+          await interaction.update({
             content: "Bạn phải ở trong voice channel",
           });
           return;
@@ -77,7 +78,7 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           });
 
         if (!track) {
-          interaction.update({
+          await interaction.update({
             content: "Không tìm thấy bài hát",
           });
           return;
@@ -103,7 +104,9 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
           embed.setImage(track.thumbnail);
         }
 
-        client.disTube?.play(voiceChannel, track.url, {
+        const queue = client.disTube?.getQueue(voiceChannel);
+        if (!queue || queue.songs.length === 0 ) {
+          client.disTube?.play(voiceChannel, track.url, {
           textChannel: (await client.channels.fetch(
             interaction.channelId
           )) as GuildTextBasedChannel,
@@ -111,13 +114,22 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
             channel: voiceChannel,
             textChannelId: interaction.channelId,
             interactionId: interaction.id,
-          }
+          },
+          });
+           await interaction.update({
+             content: `Đang chạy bài hát: ${track.name}`,
+             components: row,
+             embeds: [embed],
+           });return;
+        }
+        queue.addToQueue(track);
+        await interaction.update({
+          content: `đã thêm bài hát vào danh sách chờ`,
+          components: [],
+          embeds : [ ]
         });
-        interaction.update({
-          content: `Đang chạy bài hát: ${track.name}`,
-          components: row,
-          embeds: [embed],
-        });
+
+
         return;
       }
     }

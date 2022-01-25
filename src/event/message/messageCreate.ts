@@ -36,6 +36,16 @@ export const MessageCreateHandler = async (
         command = client.commands?.get(aliases);
       }
       if (command) {
+        if (command.permission) {
+          for (const permission of command.permission) {
+            if (!message.member?.permissions.has(permission)) {
+              message.channel.send(
+                `Bạn không có quyền để sử dụng lệnh ${command.name}`
+              );
+              return;
+            }
+          }
+        }
         command.run(client, message, args);
         return;
       }

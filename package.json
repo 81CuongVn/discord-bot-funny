@@ -38,7 +38,7 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon ./src/index.ts",
-    "replit": "npm init -y && npm i --save-dev node@16 && npm config set prefix=$(pwd)/node_modules/node && export PATH=$(pwd)/node_modules/node/bin:$PATH && npm i && npm run start"
+    "replit": "npm init -y && npm i --save-dev node@16 && npm config set prefix=$(pwd)/node_modules/node && export PATH=$(pwd)/node_modules/node/bin:$PATH && npm i && npm run dev"
   },
   "engines": {
     "node": ">=16.13.0",
@@ -51,7 +51,7 @@
     "url": "git+https://github.com/tritranduc/discord-bot-funny.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "tritranduc",
   "bugs": {
     "url": "https://github.com/tritranduc/discord-bot-funny/issues"
   },

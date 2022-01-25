@@ -7,6 +7,7 @@ export default {
   aliases: ["code"],
   description: "code",
   usage: "code <code>",
+  permission: [],
   run: async (client, message, args) => {
     try {
       if (!client.UserCreatBotId) {

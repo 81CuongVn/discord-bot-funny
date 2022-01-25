@@ -8,6 +8,7 @@ export default {
   aliases: ["level", "r"],
   description: "Xem thông tin rank của bạn hoặc là người khác",
   usage: "rank [@user]",
+  permission: [],
   run: async (client, message, args) => {
     const embed = new MessageEmbed()
       .setTimestamp()

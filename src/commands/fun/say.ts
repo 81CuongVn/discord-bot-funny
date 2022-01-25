@@ -8,6 +8,7 @@ const sayController: IMessageCommandHandlers = {
   aliases: ["s", "speak"],
   description: "Đọc nội dung bạn muốn",
   usage: "say <nội dung>",
+  permission: [],
   run: async (client: Client<boolean>, message: Message, args: string[]) => {
     try {
       if (!args[0]) {

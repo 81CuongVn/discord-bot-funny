@@ -9,6 +9,7 @@ import onClientReady from "./event/ready";
 import { MessageCreateHandler } from "./event/message/messageCreate";
 
 import { DisTube, Song } from "distube";
+import { HelloChannelModel } from "./model/HelloChannel";
 export const bot = () => {
   dotenv.config({ path: path.join(__dirname, "./.env") });
   const client: IClient = new Client({
@@ -32,23 +33,27 @@ export const bot = () => {
       `Now playing ${song.name} - \`${song.formattedDuration}\` by ${song.user}.`
     );
   });
-  player.on("finish", async (queue) => {
-    if (queue.textChannel) {
-      // delete bot Message
-      const botMessage = await queue.textChannel.messages.fetch({
-        limit: 100,
-      });
-      if (botMessage.size > 0) {
-        botMessage.map((m) => {
-          if (m.author.bot && m.author.id === client.user?.id) {
-            m.delete();
-          }
-        });
-      }
-    }
-    queue.textChannel?.send("The queue has finished.");
-    queue.stop();
+  // player.on("finish", async (queue) => {
+  //   if (queue.textChannel) {
+  //     // delete bot Message
+  //     const botMessage = await queue.textChannel.messages.fetch({
+  //       limit: 100,
+  //     });
+  //     if (botMessage.size > 0) {
+  //       botMessage.map((m) => {
+  //         if (m.author.bot && m.author.id === client.user?.id) {
+  //           m.delete();
+  //         }
+  //       });
+  //     }
+  //   }
+  //   queue.textChannel?.send("The queue has finished.");
+  //   queue.stop();
+  // });
+  player.on("error", (queue, error) => {
+    queue.send(`Error: ${error.message}`);
   });
+
   client.disTube = player;
 
   client.slashCommand = new Collection();
@@ -62,6 +67,54 @@ export const bot = () => {
     const commands = path.join(__dirname, "./handlers/", `./${han}`);
     const handlers = require(commands).default;
     handlers(client);
+  });
+  client.on("guildCreate", async (guild) => {
+    const guildId = guild.id;
+    if (!guildId) return;
+    if (guildId) {
+      if (client.slashCommandObject) {
+        await client.guilds.cache
+          .get(guildId)
+          ?.commands.set(client.slashCommandObject);
+      }
+    }
+  });
+
+  client.on("guildMemberAdd", async (member) => {
+    const WelcomeChannelId = await HelloChannelModel.findOne({
+      serverId: member.guild.id,
+    });
+    if (WelcomeChannelId) {
+      const WelcomeChannel = member.guild.channels.cache.get(
+        WelcomeChannelId.channelId
+      );
+      console.log(WelcomeChannelId, WelcomeChannel);
+      if (WelcomeChannel && WelcomeChannel.type === "GUILD_TEXT") {
+        (await WelcomeChannel.send(`Welcome to the server, ${member}`)).react(
+          "🎉"
+        );
+      }
+      if (
+        WelcomeChannelId.roleId &&
+        member.guild.roles.cache.get(WelcomeChannelId.roleId)
+      ) {
+        member.roles.add(WelcomeChannelId.roleId);
+      }
+    }
+  });
+
+  client.on("guildMemberRemove", async (member) => {
+    const WelcomeChannelId = await HelloChannelModel.findOne({
+      serverId: member.guild.id,
+    });
+    if (WelcomeChannelId) {
+      const WelcomeChannel = member.guild.channels.cache.get(
+        WelcomeChannelId.channelId
+      );
+      if (WelcomeChannel && WelcomeChannel.type === "GUILD_TEXT") {
+        WelcomeChannel.send(`Goodbye ${member}`);
+      }
+    }
   });
 
   client.on("ready", async () => {

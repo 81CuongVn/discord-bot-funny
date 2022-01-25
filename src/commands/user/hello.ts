@@ -6,6 +6,7 @@ const HelloController: IMessageCommandHandlers = {
   aliases: ["he"],
   description: "chào bạn",
   usage: "hello",
+  permission: [],
   run: async (client: Client<boolean>, message: Message, args: string[]) => {
     try {
       const member =

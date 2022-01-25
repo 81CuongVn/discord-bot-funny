@@ -7,6 +7,7 @@ const AvatarController: IMessageCommandHandlers = {
   aliases: ["ava"],
   description: "Hiển thị avatar của bạn hoặc người khác",
   usage: "avatar [@user]",
+  permission: [],
   run: async (client: Client<boolean>, message: Message, args: string[]) => {
     try {
       const member =
