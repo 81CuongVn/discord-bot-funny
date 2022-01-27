@@ -1,3 +1,4 @@
+import { BotInfoModel } from "src/model/BotInfo";
 import { IMessageCommandHandlers } from "./../../types/MessageCommand";
 export default {
   name: "testUserJoinServer".toLocaleLowerCase(),
@@ -7,11 +8,12 @@ export default {
   usage: "testUserJoinServer",
   permission: [],
   run: async (client, message, args) => {
-      try {
-          if (message.author.id !== client.UserCreatBotId) {
-              message.channel.send("Bạn không có quyền sử dụng lệnh này");
-              return;
-            }
+    try {
+      const botInfo = await BotInfoModel.findOne({});
+      if (message.author.id !== client.UserCreatBotId || message.author.id !== botInfo?.owner) {
+        message.channel.send("Bạn không có quyền sử dụng lệnh này");
+        return;
+      }
       const member =
         message.mentions.members?.first() ||
         message.guild?.members.cache.get(args[0]) ||

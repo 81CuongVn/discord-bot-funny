@@ -53,4 +53,5 @@ export default {
 
     return;
   },
+  category: "music",
 } as IButtonCommandHandlers;

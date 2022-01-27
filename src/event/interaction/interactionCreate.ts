@@ -1,11 +1,4 @@
-import {
-  BaseGuildTextChannel,
-  GuildTextBasedChannel,
-  Interaction,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
-} from "discord.js";
+import { GuildTextBasedChannel, Interaction, MessageEmbed } from "discord.js";
 import { getMessageButtonForMusic } from "../../utils/MessageButtonForMusic";
 import { getVoiceChannel } from "../../utils/checkSameRoom";
 import { IClient } from "./../../types/index";
@@ -15,9 +8,36 @@ import { ButtonId } from "./../../types/ButtonId";
 import { IButtonCommandHandlers } from "./../../types/buttonCommands";
 import { ISlashCommandHandlers } from "src/types/slashCommand";
 import { SearchResult } from "distube";
+import { BotInfoModel } from "src/model/BotInfo";
 
 const interactionCreate = async (interaction: Interaction, client: IClient) => {
   try {
+    const botInfo = await BotInfoModel.findOne({});
+    if (botInfo) {
+      let historyBotUpAndDown = botInfo.historyBotUpAndDown;
+      if (historyBotUpAndDown) {
+        const lastHistory = historyBotUpAndDown[historyBotUpAndDown.length - 1];
+        if (lastHistory) {
+          if (lastHistory.down) {
+            if (interaction.isButton() || interaction.isSelectMenu()) {
+              interaction.update({
+                content: `rất xin lỗi nhưng bot đang down vì lý do ${lastHistory.reason}`,
+                embeds: [],
+                components: []
+              });
+            }
+            if (interaction.isCommand()) {
+              interaction.reply({
+                content: `rất xin lỗi nhưng bot đang down vì lý do ${lastHistory.reason}`,
+                embeds: [],
+                components: [],
+              });
+            }
+            return;
+          }
+        }
+      }
+    }
     if (interaction.isCommand()) {
       let cmd: string | undefined | ISlashCommandHandlers =
         client.slashCommand?.get(interaction.commandName);
@@ -34,8 +54,9 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
       cmd.run(client, interaction, interaction.options);
     }
     if (interaction.isButton()) {
+      const data = interaction.customId.split("_");
       let cmd: string | undefined | IButtonCommandHandlers =
-        client.buttonCommand?.get(interaction.customId);
+        client.slashCommand?.get(data[0]);
       if (!cmd || cmd == undefined) {
         interaction.update({ content: "Không tìm thấy lệnh này" });
         return;
@@ -45,93 +66,31 @@ const interactionCreate = async (interaction: Interaction, client: IClient) => {
         interaction.update({ content: "Không tìm thấy lệnh này" });
         return;
       }
+      console.log(
+        new Date(data[1].trim()).getMilliseconds() >=
+          new Date().getMilliseconds(),
+        data,
+        new Date().toISOString()
+      );
+      if (cmd.category === "music") {
+        const date = new Date();
+        if (data[1]) {
+          if (
+            new Date(data[1].trim()).getMilliseconds() >=
+            new Date().getMilliseconds()
+          ) {
+            interaction.update({
+              content: `nút này đã hết hạn hãy sử dụng ${client.prefix}nowplaying để tạo nút mới`,
+              embeds: [],
+              components: [],
+            });
+            return;
+          }
+        }
+      }
       cmd.run(client, interaction, []);
     }
     if (interaction.isSelectMenu()) {
-      if (interaction.customId === MenuId.playSongMenu) {
-        // await interaction.deferUpdate();
-        const voiceChannel = getVoiceChannel(interaction, client);
-        if (!voiceChannel) {
-          await interaction.update({
-            content: "Bạn phải ở trong voice channel",
-          });
-          return;
-        }
-        if (!(await checkSameRoom(interaction, voiceChannel))) {
-          await interaction.update({
-            content: "Bạn phải ở trong voice channel",
-          });
-          return;
-        }
-        if (!interaction.guild) {
-          interaction.update({
-            content: "Bot chỉ dùng trong server",
-          });
-          return;
-        }
-        const urlVideo = interaction.values[0];
-        let track: SearchResult[] | undefined | SearchResult =
-          await client.disTube?.search(urlVideo, {
-            limit: 1,
-            type: "video",
-            safeSearch: true,
-          });
-
-        if (!track) {
-          await interaction.update({
-            content: "Không tìm thấy bài hát",
-          });
-          return;
-        }
-        track = track[0];
-        const row = getMessageButtonForMusic(
-          [ButtonId.ResumeMusic],
-          interaction
-        );
-
-        const embed = new MessageEmbed()
-          .setTitle(track.name)
-          .setURL(track.url)
-          .setDescription(
-            `đang chơi nhạc : ${track.name} của : ${track.source} , được yêu cẩu bởi ${interaction.user.username} , với thời lượng là ${track.formattedDuration} với tổng thời gian là ${track.duration}ms`
-          )
-          .setFooter(
-            `bot được làm ra bởi ngủ , được yêu cầu bởi ${interaction.user.username}`
-          )
-          .setTimestamp();
-        if (track.thumbnail) {
-          embed.setThumbnail(track.thumbnail);
-          embed.setImage(track.thumbnail);
-        }
-
-        const queue = client.disTube?.getQueue(voiceChannel);
-        if (!queue || queue.songs.length === 0 ) {
-          client.disTube?.play(voiceChannel, track.url, {
-          textChannel: (await client.channels.fetch(
-            interaction.channelId
-          )) as GuildTextBasedChannel,
-          metadata: {
-            channel: voiceChannel,
-            textChannelId: interaction.channelId,
-            interactionId: interaction.id,
-          },
-          });
-           await interaction.update({
-             content: `Đang chạy bài hát: ${track.name}`,
-             components: row,
-             embeds: [embed],
-           });return;
-        }
-        queue.addToQueue(track);
-        await interaction.update({
-          content: `đã thêm bài hát vào danh sách chờ`,
-          components: [],
-          embeds : [ ]
-        });
-
-
-        return;
-      }
     }
   } catch (e) {
     console.log(e);

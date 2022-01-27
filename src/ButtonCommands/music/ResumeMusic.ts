@@ -39,11 +39,12 @@ export default {
       return;
     }
     queue.resume();
-    const row = getMessageButtonForMusic([ButtonId.ResumeMusic], interaction);
+    const row = getMessageButtonForMusic(queue);
     interaction.update({
       content: "Bot đã tiếp tục",
       components: row,
     });
     return;
   },
+  category: "music",
 } as IButtonCommandHandlers;

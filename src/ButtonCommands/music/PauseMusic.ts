@@ -39,11 +39,12 @@ export default {
     }
 
     queue.pause();
-    const row = getMessageButtonForMusic([ButtonId.PauseMusic], interaction);
+    const row = getMessageButtonForMusic(queue);
     interaction.update({
       content: "Bot đã tạm dừng",
       components: row,
     });
     return;
   },
+  category: "music",
 } as IButtonCommandHandlers;

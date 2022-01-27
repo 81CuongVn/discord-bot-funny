@@ -7,4 +7,5 @@ export interface IButtonCommandHandlers {
     message: ButtonInteraction<CacheType>,
     args: string[]
   ) => Promise<void>;
+  category: string;
 }

@@ -1,4 +1,9 @@
-import { Collection, GuildTextBasedChannel, TextChannel } from "discord.js";
+import {
+  Collection,
+  GuildTextBasedChannel,
+  MessageEmbed,
+  TextChannel,
+} from "discord.js";
 import { Client, Intents } from "discord.js";
 import dotenv from "dotenv";
 import { readdirSync } from "fs";
@@ -10,6 +15,8 @@ import { MessageCreateHandler } from "./event/message/messageCreate";
 
 import { DisTube, Song } from "distube";
 import { HelloChannelModel } from "./model/HelloChannel";
+import { getMessageButtonForMusic } from "./utils/MessageButtonForMusic";
+import { ButtonId } from "./types/ButtonId";
 export const bot = () => {
   dotenv.config({ path: path.join(__dirname, "./.env") });
   const client: IClient = new Client({
@@ -23,33 +30,61 @@ export const bot = () => {
     partials: ["MESSAGE", "CHANNEL", "REACTION"],
   });
   const player = new DisTube(client, {});
-  player.on("addSong", (queue, song) => {
-    queue.textChannel?.send(
-      `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}.`
-    );
-  });
-  player.on("playSong", (queue, song) => {
-    queue.textChannel?.send(
-      `Now playing ${song.name} - \`${song.formattedDuration}\` by ${song.user}.`
-    );
-  });
-  // player.on("finish", async (queue) => {
-  //   if (queue.textChannel) {
-  //     // delete bot Message
-  //     const botMessage = await queue.textChannel.messages.fetch({
-  //       limit: 100,
-  //     });
-  //     if (botMessage.size > 0) {
-  //       botMessage.map((m) => {
-  //         if (m.author.bot && m.author.id === client.user?.id) {
-  //           m.delete();
-  //         }
-  //       });
-  //     }
-  //   }
-  //   queue.textChannel?.send("The queue has finished.");
-  //   queue.stop();
+  // player.on("addSong", (queue, song) => {
+  //   queue.textChannel?.send(
+  //     `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}.`
+  //   );
   // });
+  player.on("playSong", (queue, song) => {
+    let username: undefined | string = undefined;
+    // check song.metadata.user have the user and you can get the username
+    const metadata: any = song.metadata;
+    if (metadata.user) {
+      username = metadata.user;
+    }
+    if (queue.textChannel) {
+      const embed = new MessageEmbed()
+        .setTitle(song.name || "")
+        .setURL(song.url)
+        .setDescription(
+          `đang chơi nhạc : ${song.name} của : ${song.source} ${
+            username ? `, được yêu cầu bởi <@${username}>` : ""
+          } , với thời lượng là ${
+            song.formattedDuration
+          } với tổng thời gian là ${song.duration}ms`
+        )
+        .setFooter(
+          `bot được làm ra bởi ngủ ${
+            username ? `, được yêu cầu bởi <@${username}>` : ""
+          } `
+        )
+        .setTimestamp();
+      if (song.thumbnail) {
+        embed.setThumbnail(song.thumbnail);
+        embed.setImage(song.thumbnail);
+      }
+      const row = getMessageButtonForMusic(queue);
+      queue.textChannel.send({
+        embeds: [embed],
+        components : row
+      }).then((message) => {
+        metadata.messageId = message.id;
+      });
+    }
+  });
+
+  player.on("finishSong", (queue, song) => {
+    const metadata: any = song.metadata;
+    if (metadata.messageId) {
+      queue.textChannel?.messages.fetch(metadata.messageId).then((msg) => {
+        if (msg) {
+          if (msg.deletable) msg.delete();
+        }
+      });
+    }
+  });
+
+
   player.on("error", (queue, error) => {
     queue.send(`Error: ${error.message}`);
   });
@@ -62,7 +97,6 @@ export const bot = () => {
   client.categories = readdirSync(path.join(__dirname, "./commands/"));
   client.prefix = process.env.PREFIX || ",";
   client.UserCreatBotId = "889140130105929769";
-  client.buttonCommand = new Collection();
   readdirSync(path.join(__dirname, "./handlers/")).forEach((han) => {
     const commands = path.join(__dirname, "./handlers/", `./${han}`);
     const handlers = require(commands).default;

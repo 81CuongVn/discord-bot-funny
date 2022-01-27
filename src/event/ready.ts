@@ -1,23 +1,17 @@
+import { BotInfoModel } from "src/model/BotInfo";
 import ConnectToDb from "../utils/connectDB";
-import { IClient } from './../types/index';
+import { IClient } from "./../types/index";
 
-const onClientReady = async(client: IClient) => {
-    const databaseUrl = process.env.DATABASE_URL;
+const onClientReady = async (client: IClient) => {
+  const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
     throw new Error("DATABASE_URL is not defined");
   }
   await ConnectToDb(databaseUrl);
   console.log(`Logged in as ${client.user?.tag}!`);
-  let servers = await client.guilds.cache.size
-  let serverCount = await client.guilds.cache.reduce((acc, guild) => {
-    return acc + guild.memberCount;
-  }, 0);
-  const activity = [
-    `${client.prefix}help | ${servers} servers`,
-    `invite me | watching ${serverCount} users`,
-  ]
+
   let lastStatus = 0;
-  client.guilds.cache.map(async(guild) => {
+  client.guilds.cache.map(async (guild) => {
     const guildId = guild.id;
     if (!guildId) return;
     if (guildId) {
@@ -28,12 +22,19 @@ const onClientReady = async(client: IClient) => {
       }
     }
   });
-  setInterval(() => {
-
-    const status = activity[Math.floor(lastStatus)];
+  setInterval(async () => {
+    let status = "";
+    if (lastStatus === 0) {
+      status = `${client.prefix}help | ${client.guilds.cache.size} servers`;
+    } else {
+      const memberCount = client.guilds.cache.reduce((acc, guild) => {
+        return acc + guild.memberCount;
+      }, 0);
+      status = `invite me | watching ${memberCount} users`;
+    }
     client.user?.setPresence({
       status: "online",
-      afk: false,
+      afk: true,
       activities: [
         {
           name: status,
@@ -42,11 +43,21 @@ const onClientReady = async(client: IClient) => {
         },
       ],
     });
-    if (lastStatus >= activity.length - 1) {
+    if (lastStatus >= 1) {
       lastStatus = 0;
     } else {
       lastStatus++;
     }
   }, 5000);
+  const botInfo = await BotInfoModel.findOne({});
+  if (!botInfo) {
+    const botInfoModel = new BotInfoModel({
+      username: client.user?.username,
+      owner: client.UserCreatBotId,
+      historyBotUpAndDown: [],
+    });
+    await botInfoModel.save();
+  }
+
 };
 export default onClientReady;

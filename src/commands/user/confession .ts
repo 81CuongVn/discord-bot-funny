@@ -38,6 +38,7 @@ export default {
         message.reply("không tìm thấy kênh confession");
         return;
       }
+      channel.sendTyping();
       channel.send({ embeds: [embed] });
       // message.channel => channel
       if (message.deletable) message.delete(); // message.channel is a channel

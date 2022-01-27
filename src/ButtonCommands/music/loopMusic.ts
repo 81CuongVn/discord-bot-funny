@@ -44,46 +44,7 @@ export default {
       });
       return;
     }
-    const disableButton: string[] = [];
-    interaction.message.components?.map((component) => {
-      component.components?.map((button) => {
-        if (button.type === "BUTTON" && button.disabled === true) {
-          if (button.customId) disableButton.push(button.customId);
-        }
-      });
-    });
-    const allRow: MessageActionRow[] = [];
-    const button = getButton();
-    let pair = [],
-      pair3 = [];
-
-    for (let i = 0; i <= button.length; i++) {
-      pair3.push(button[i]);
-      if ((i + 1) % 5 == 0) {
-        pair.push(pair3);
-        pair3 = [];
-      }
-    }
-    pair.map((rows, index) => {
-      const row = new MessageActionRow();
-      rows.map((button, index) => {
-        if (button.customId) {
-          if (disableButton.includes(button.customId)) {
-            button.setDisabled(true);
-          }
-          if (button.customId === ButtonId.loopMusic) {
-            button.setLabel(
-              queue.repeatMode === RepeatMode.QUEUE ? "loop" : "bỏ loop"
-            );
-            button.setEmoji(queue.repeatMode === RepeatMode.QUEUE ? "➡️" : "⏹");
-            button.setStyle("PRIMARY");
-            button.setDisabled(false);
-          }
-          row.addComponents(button);
-        }
-      });
-      allRow.push(row);
-    });
+    const row = getMessageButtonForMusic(queue);
     queue.setRepeatMode(
       queue.repeatMode === RepeatMode.QUEUE
         ? RepeatMode.DISABLED
@@ -91,8 +52,9 @@ export default {
     );
     interaction.update({
       content: "Bot đã bật chế độ loop",
-      components: allRow,
+      components: row,
     });
     return;
   },
+  category: "music",
 } as IButtonCommandHandlers;

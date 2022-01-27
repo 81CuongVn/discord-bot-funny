@@ -10,11 +10,9 @@ export interface IClient extends Client<boolean> {
   slashCommand?: Collection<string, string>; // chút import vào rồi dùng
   slashCommandObject?: any;
   disTube?: DisTube;
-  buttonCommand?: Collection<string, string>; // chút import vào rồi dùng
   commands?: Collection<string, IMessageCommandHandlers>;
   aliases?: Collection<string, string>;
   categories?: string[];
   prefix?: string;
-  menuCommand?: Collection<string, IMessageCommandHandlers>;
 }
     

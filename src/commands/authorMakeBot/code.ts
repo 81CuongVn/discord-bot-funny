@@ -1,5 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { IMessageCommandHandlers } from "../../types/MessageCommand";
+import { BotInfoModel } from "src/model/BotInfo";
 
 export default {
   name: "code".toLocaleLowerCase(),
@@ -10,11 +11,12 @@ export default {
   permission: [],
   run: async (client, message, args) => {
     try {
-      if (!client.UserCreatBotId) {
+      const botInfo = await BotInfoModel.findOne({});
+      if (!client.UserCreatBotId || !botInfo) {
         message.channel.send("bot chưa được thêm người tạo");
         return;
       }
-      if (client.UserCreatBotId !== message.author.id) {
+      if (client.UserCreatBotId !== message.author.id || message.author.id !== botInfo.owner) {
         message.channel.send("bạn không có quyền sử dụng tính năng này");
         return;
       }

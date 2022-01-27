@@ -1,5 +1,12 @@
-import {  ApplicationCommandOptionData, ApplicationCommandType, CacheType, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
-import { IClient } from './index';
+import {
+  ApplicationCommandDataResolvable,
+  ApplicationCommandOptionData,
+  ApplicationCommandType,
+  CacheType,
+  CommandInteraction,
+  CommandInteractionOptionResolver,
+} from "discord.js";
+import { IClient } from "./index";
 
 export interface ISlashCommandHandlers {
   usage?: string;
@@ -14,7 +21,7 @@ export interface ISlashCommandHandlers {
       CommandInteractionOptionResolver<CacheType>,
       "getMessage" | "getFocused"
     >
-  ) => any
+  ) => any;
   defaultPermission?: boolean;
   options?: Array<ApplicationCommandOptionData>;
 }
