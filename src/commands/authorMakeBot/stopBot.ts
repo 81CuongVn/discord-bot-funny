@@ -23,7 +23,7 @@ export default {
       return;
     }
     const reason = args.slice(1).join(" ");
-    BotInfoModel.findOneAndUpdate(
+    await BotInfoModel.findOneAndUpdate(
       {},
       {
         historyBotUpAndDown: [
