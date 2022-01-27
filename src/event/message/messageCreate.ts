@@ -39,17 +39,19 @@ export const MessageCreateHandler = async (
       }
       if (command) {
         message.channel.sendTyping();
-        if (botInfo) {
-          let historyBotUpAndDown = botInfo.historyBotUpAndDown;
-          if (historyBotUpAndDown) {
-            const lastHistory =
-              historyBotUpAndDown[historyBotUpAndDown.length - 1];
-            if (lastHistory) {
-              if (lastHistory.down) {
-                message.reply(
-                  `Bot đang down vì lý do ${lastHistory.reason} thật lòng xin lỗi `
-                );
-                return;
+        if ("stopBot".toLocaleLowerCase() !== command.name) {
+          if (botInfo) {
+            let historyBotUpAndDown = botInfo.historyBotUpAndDown;
+            if (historyBotUpAndDown) {
+              const lastHistory =
+                historyBotUpAndDown[historyBotUpAndDown.length - 1];
+              if (lastHistory) {
+                if (lastHistory.down) {
+                  message.reply(
+                    `Bot đang down vì lý do ${lastHistory.reason} thật lòng xin lỗi `
+                  );
+                  return;
+                }
               }
             }
           }
