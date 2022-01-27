@@ -1,12 +1,8 @@
 import { checkSameRoom, getVoiceChannel } from "../../utils/checkSameRoom";
-import {
-  getButton,
-  getMessageButtonForMusic,
-} from "../../utils/MessageButtonForMusic";
+import { getMessageButtonForMusic } from "../../utils/MessageButtonForMusic";
 import { IButtonCommandHandlers } from "../../types/buttonCommands";
 import { ButtonId } from "../../types/ButtonId";
 import { MessageActionRow } from "discord.js";
-import { QueueRepeatMode } from "discord-player";
 import { RepeatMode } from "distube";
 
 export default {

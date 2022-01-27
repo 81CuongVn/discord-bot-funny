@@ -1,7 +1,7 @@
 import { table } from "table";
 import fs from "fs";
 import path from "path";
-import { IClient } from "src/types";
+import { IClient } from "../types";
 import glob from "glob";
 import { promisify } from "util";
 

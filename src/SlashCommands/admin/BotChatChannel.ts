@@ -1,4 +1,4 @@
-import { ISlashCommandHandlers } from "src/types/slashCommand";
+import { ISlashCommandHandlers } from "../../types/slashCommand";
 import { Constants } from "discord.js";
 import { BotChatChannelModel } from "../../model/BotChatChannelModel";
 

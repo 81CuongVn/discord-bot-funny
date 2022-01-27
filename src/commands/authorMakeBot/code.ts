@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { IMessageCommandHandlers } from "../../types/MessageCommand";
-import { BotInfoModel } from "src/model/BotInfo";
+import { BotInfoModel } from "../../model/BotInfo";
 
 export default {
   name: "code".toLocaleLowerCase(),

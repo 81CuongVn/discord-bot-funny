@@ -1,4 +1,4 @@
-import { ISlashCommandHandlers } from "src/types/slashCommand";
+import { ISlashCommandHandlers } from "../../types/slashCommand";
 
 const deleteCommandBotCreateHandler: ISlashCommandHandlers = {
   name: "deleteCommandBotCreate".toLocaleLowerCase(),

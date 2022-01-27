@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Message } from "discord.js";
-import { IClient } from "src/types";
+import { IClient } from "../../types";
 import checkUserSpam from "../../utils/CheckSpamMessage";
 import { BotChatChannelModel } from "../../model/BotChatChannelModel";
 import xpMessage from "../../utils/rankMessage";

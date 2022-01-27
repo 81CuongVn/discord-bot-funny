@@ -1,4 +1,4 @@
-import { BotInfoModel } from "src/model/BotInfo";
+import { BotInfoModel } from "../../model/BotInfo";
 import { IMessageCommandHandlers } from "./../../types/MessageCommand";
 export default {
   name: "stopBot".toLocaleLowerCase(),

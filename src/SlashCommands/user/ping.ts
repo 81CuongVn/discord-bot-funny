@@ -1,5 +1,5 @@
 import { Constants, MessageEmbed } from "discord.js";
-import { ISlashCommandHandlers } from "src/types/slashCommand";
+import { ISlashCommandHandlers } from "../../types/slashCommand";
 
 const pingHandler: ISlashCommandHandlers = {
   name: "ping".toLocaleLowerCase(),

@@ -1,4 +1,4 @@
-import { BotInfoModel } from "src/model/BotInfo";
+import { BotInfoModel } from "../model/BotInfo";
 import ConnectToDb from "../utils/connectDB";
 import { IClient } from "./../types/index";
 

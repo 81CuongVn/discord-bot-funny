@@ -1,4 +1,4 @@
-import { ISlashCommandHandlers } from "src/types/slashCommand";
+import { ISlashCommandHandlers } from "../../types/slashCommand";
 import { Constants, MessageEmbed } from "discord.js";
 import wiki from "wikijs";
 export default {

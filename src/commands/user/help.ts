@@ -1,7 +1,7 @@
 import { IMessageCommandHandlers } from "../../types/MessageCommand";
 import { Message, MessageEmbed } from "discord.js";
 import { stripIndent } from "common-tags";
-import { IClient } from "src/types";
+import { IClient } from "../../types";
 
 const helpController: IMessageCommandHandlers = {
   name: "help",

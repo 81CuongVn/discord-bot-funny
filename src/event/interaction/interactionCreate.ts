@@ -2,13 +2,9 @@ import { GuildTextBasedChannel, Interaction, MessageEmbed } from "discord.js";
 import { getMessageButtonForMusic } from "../../utils/MessageButtonForMusic";
 import { getVoiceChannel } from "../../utils/checkSameRoom";
 import { IClient } from "./../../types/index";
-import { MenuId } from "./../../types/MenuId";
-import { checkSameRoom } from "./../../utils/checkSameRoom";
-import { ButtonId } from "./../../types/ButtonId";
 import { IButtonCommandHandlers } from "./../../types/buttonCommands";
-import { ISlashCommandHandlers } from "src/types/slashCommand";
-import { SearchResult } from "distube";
-import { BotInfoModel } from "src/model/BotInfo";
+import { ISlashCommandHandlers } from "../../types/slashCommand";
+import { BotInfoModel } from "../../model/BotInfo";
 
 const interactionCreate = async (interaction: Interaction, client: IClient) => {
   try {
