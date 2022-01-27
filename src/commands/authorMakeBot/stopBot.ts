@@ -2,7 +2,7 @@ import { BotInfoModel } from "../../model/BotInfo";
 import { IMessageCommandHandlers } from "./../../types/MessageCommand";
 export default {
   name: "stopBot".toLocaleLowerCase(),
-  category: "authorMakeBot".toLocaleLowerCase(),
+  category: "authorMakeBot",
   aliases: [],
   permission: [],
   run: async (client, message, args) => {
