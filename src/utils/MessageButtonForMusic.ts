@@ -50,7 +50,7 @@ export const getMessageButtonForMusic = (queue: Queue) => {
   return allRow;
 };
 export const getButton = () => {
-  const buttonTimeOut = new Date(Date.now() + 1000 * 10);
+  const buttonTimeOut = new Date(Date.now() + 1000 * 60 * 60);
   return [
     new MessageButton()
       .setCustomId(`${ButtonId.SkipMusic}_${buttonTimeOut.toISOString()}`)
