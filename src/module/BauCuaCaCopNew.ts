@@ -2,6 +2,8 @@ import { IClient } from "./../types/index";
 import { Collection, Message, MessageEmbed } from "discord.js";
 import { IPlayer } from "../commands/user/baucuacacop";
 import { IGame } from "src/commands/user/baucuacacop";
+import { BauCuaCaCopGamePlayModel } from "../model/BauCuaCaCopGamePlay";
+import { BauCuaCaCopPlayerModel } from "../model/BauCuCaCopPlayer";
 export default async (
   client: IClient,
   message: Message,
@@ -14,37 +16,38 @@ export default async (
     message.reply("Không tìm thấy server");
     return;
   }
-  const ServerData = GamePlay.get(serverId);
+  const ServerData = await BauCuaCaCopGamePlayModel.findOne({
+    serverId: serverId,
+  });
   if (ServerData) {
     message.channel.send(
       "một server chỉ có thể có một ván trong bất kì thời điểm"
     );
     return;
   }
-  let player = Player.get(message.author.id);
+  let player = await BauCuaCaCopPlayerModel.findOne({
+    userId: message.author.id,
+  });
   if (!player) {
-    Player.set(message.author.id, {
+    await new BauCuaCaCopPlayerModel({
       serverId,
       userId: message.author.id,
       money: 100,
+    }).save();
+    player = await BauCuaCaCopPlayerModel.findOne({
+      userId: message.author.id,
     });
-    player = Player.get(message.author.id);
   }
-  const newGame: IGame = {
-    player: [],
-    CreateBy: player || message.author.id,
-    status: "waiting",
-    bet: [],
-  };
-  GamePlay.set(serverId, newGame);
-  if (!Player.get(message.author.id)) {
-    const NewPlayer: IPlayer = {
-      userId: message.author.id,
-      money: 100,
+  if (!ServerData) {
+    await new BauCuaCaCopGamePlayModel({
+      player: [message.author.id],
+      CreateBy: message.author.id || player?.userId,
+      status: "waiting",
+      bet: [],
       serverId,
-    };
-    Player.set(message.author.id, NewPlayer);
+    }).save();
   }
+
   const thisCommandName = `${client.prefix}baucuacacop`;
   const description = `
 một chút về luật chơi \n
@@ -57,10 +60,12 @@ dùng lệnh ${thisCommandName} profile để có thể xem thông tin của b�
 dùng lệnh ${thisCommandName} đặt để đặt bầu cua\n
 ban đâu người dùng được tặng 100 đồng khi mà cháy túi thì được tặng 4 đồng\n
 `;
-    const embed = new MessageEmbed().setTitle("luật chơi").setDescription(description);
-    message.channel.send({
-        embeds : [embed]
-    });
+  const embed = new MessageEmbed()
+    .setTitle("luật chơi")
+    .setDescription(description);
+  message.channel.send({
+    embeds: [embed],
+  });
   message.channel.send(
     `phòng chơi đã mở với chủ phòng là <@${message.author.id}>`
   );

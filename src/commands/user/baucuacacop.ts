@@ -3,6 +3,7 @@ import { Collection, MessageEmbed } from "discord.js";
 import BauCuaCaCopRoll from "../../module/BauCuaCaCopRoll";
 import BauCuaCaCopChose from "../../module/BauCuaCaCopChose";
 import BauCuaCaCopNew from "../../module/BauCuaCaCopNew";
+import { BauCuaCaCopPlayerModel } from "../../model/BauCuCaCopPlayer";
 
 export interface IPlayer {
   serverId: string;
@@ -42,7 +43,9 @@ export default {
       BauCuaCaCopRoll(client, message, args, Player, GamePlay);
     }
     if (args[0] === "profile") {
-      let userData = Player.get(message.author.id);
+      let userData = await BauCuaCaCopPlayerModel.findOne({
+        userId: message.author.id,
+      });
       if (!userData) {
         message.reply(
           "bạn chưa có profile dùng lệnh " +
@@ -53,15 +56,15 @@ export default {
       }
       const embed = new MessageEmbed()
         .setTitle("profile")
-        .setDescription(
-          `<@${userData.userId}> có ${userData.money} đồng`
-      );
+        .setDescription(`<@${userData.userId}> có ${userData.money} đồng`);
       message.channel.send({
         embeds: [embed],
       });
     }
     if (args[0] === "registration") {
-      const userData = Player.get(message.author.id);
+      const userData = await BauCuaCaCopPlayerModel.findOne({
+        userId: message.author.id,
+      });
       if (userData) {
         message.reply("bạn đã có profile rồi");
         return;
@@ -70,11 +73,11 @@ export default {
         message.reply("Không tìm thấy server");
         return;
       }
-      Player.set(message.author.id, {
+      await new BauCuaCaCopPlayerModel({
         serverId: message.guild?.id,
         userId: message.author.id,
         money: 100,
-      });
+      }).save();
     }
   },
 } as IMessageCommandHandlers;
