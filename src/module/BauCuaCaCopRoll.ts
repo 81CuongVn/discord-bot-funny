@@ -150,7 +150,13 @@ export default async (
               }
             }
           }
-        } else {
+        }
+      }
+    }
+    for (let key of ChoseBetKey) {
+      for (let BetName of resultString) {
+        if (BetName !== key) {
+          const ThisBet = ChoseBet[key];
           for (let user of ThisBet.userChose) {
             if (!loseUser.find((userLose) => userLose.userId === user)) {
               if (!winUser.find((userWin) => userWin.userId === user)) {
@@ -168,6 +174,7 @@ export default async (
         }
       }
     }
+
     const EmbedWinLose = new MessageEmbed().setTitle("kết quả");
     EmbedWinLose.addField(
       "các bạn thắng",
