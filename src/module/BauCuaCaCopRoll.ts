@@ -124,17 +124,18 @@ export default async (
             const UserInDatabase = await BauCuaCaCopPlayerModel.findOne({
               userId: user,
             });
-            console.log(UserInDatabase);
             if (UserInDatabase) {
-              const UserAfterUpdate =
+              let UserAfterUpdate =
                 await BauCuaCaCopPlayerModel.findOneAndUpdate(
                   {
                     userId: user,
                   },
                   {
-                    money:
-                      UserInDatabase.money +
-                      (UserInDatabase?.betChose?.numberAnimal || 0),
+                    money: winUser.filter((userWin) => userWin.userId === user)
+                      ? UserInDatabase.money +
+                        (UserInDatabase?.betChose?.numberAnimal || 0)
+                      : UserInDatabase.money +
+                        (UserInDatabase.betChose?.numberAnimal || 0) * 2,
                   },
                   {
                     new: true,
