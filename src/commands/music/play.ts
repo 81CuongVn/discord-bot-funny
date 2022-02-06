@@ -18,6 +18,16 @@ export default {
       message.reply("bạn đang không ở trong kênh nhạc");
       return;
     }
+    // if bot in another voice channel
+    if (message.guild?.me?.voice.channel) {
+      if (
+        message.guild?.me?.voice.channel.id !== message.member?.voice.channel.id
+      ) {
+        message.reply("bot đang ở trong kênh khác");
+        return;
+      }
+    }
+
     const musicName = args.join(" ");
     if (!musicName) {
       message.reply("bạn chưa nhập tên bài hát");
@@ -78,16 +88,18 @@ export default {
         m.reply("bạn phải ở trong kênh nhạc của mình");
         return;
       }
-      client.disTube?.play(m.member?.voice.channel, track.url, {
+       client.disTube?.play(m.member?.voice.channel, track.url, {
         textChannel: m.channel,
         metadata: {
           channel: m.member?.voice.channel,
           textChannelId: m.channel.id,
           user: m.author.id,
         },
-      });
+       })
+      client.disTube?.getQueue(m.member?.voice.channel.id)?.setVolume(100)
       wasChoose = true;
       if (botMessage.deletable) botMessage.delete();
+      collect.emit("end");
     });
   },
 } as IMessageCommandHandlers;
