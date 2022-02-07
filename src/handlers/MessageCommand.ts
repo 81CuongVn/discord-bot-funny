@@ -1,4 +1,3 @@
-import { readdirSync } from "fs";
 import path from "path";
 import { table } from "table";
 import { IClient } from "./../types/index";
@@ -14,13 +13,6 @@ async function ImportFile(filePath: string) {
 }
 
 const MessageCommandHandler = async (client: IClient) => {
-  // var dirMain = readdirSync(path.join(__dirname, "../commands/"));
-  // dirMain.forEach((dir) => {
-  //   var commands = readdirSync(
-  //     path.join(__dirname, `../commands/${dir}/`)
-  //   ).filter((file) => file.endsWith(".ts"));
-
-  // });
   const commandFile = await globPromise(`../commands/*/*{.ts,.js}`, {
     cwd: __dirname,
   });
