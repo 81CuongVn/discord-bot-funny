@@ -2,9 +2,9 @@ import axios from "axios";
 import { Message } from "discord.js";
 import { IClient } from "../../types";
 import checkUserSpam from "../../utils/CheckSpamMessage";
-import { BotChatChannelModel } from "../../model/BotChatChannelModel";
 import xpMessage from "../../utils/rankMessage";
 import { BotInfoModel } from "../../model/BotInfo";
+import { ServerInfoModel } from "../../model/ServerInfo";
 
 export const MessageCreateHandler = async (
   message: Message,
@@ -20,15 +20,18 @@ export const MessageCreateHandler = async (
 
     // get guild id
     const guildId = message.guild?.id;
-
-    const botChatChannel = await BotChatChannelModel.findOne({
-      serverId: guildId,
-    });
+    
+    const botChatChannel = (
+      await ServerInfoModel.findOne({
+        ServerId: guildId,
+      })
+    )?.BotChatChannel;
     const botInfo = await BotInfoModel.findOne({});
     const prefix = client.prefix || "!";
     if (message.content.startsWith(prefix)) {
-      const args = message.content.slice(prefix.length).trim().split(" ");
+      const args = message.content.trim().slice(prefix.length).split(" ");
       const cmd = args.shift()?.toLocaleLowerCase();
+      console.log(cmd)
       if (!cmd) return;
       if (cmd?.length === 0) return;
       let command = client.commands?.get(cmd);
@@ -71,7 +74,7 @@ export const MessageCreateHandler = async (
       }
     } else {
       try {
-        if (botChatChannel?.channelId !== message.channel.id) {
+        if (botChatChannel?.ChannelId !== message.channel.id) {
           await checkUserSpam(message, client);
         }
       } catch (error) {
@@ -83,7 +86,7 @@ export const MessageCreateHandler = async (
 
     const channelId = message.channel.id;
     if (botChatChannel) {
-      if (channelId === botChatChannel?.channelId) {
+      if (channelId === botChatChannel?.ChannelId) {
         message.channel.sendTyping();
         if (botInfo) {
           let historyBotUpAndDown = botInfo.historyBotUpAndDown;

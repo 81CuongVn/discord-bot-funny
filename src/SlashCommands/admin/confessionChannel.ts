@@ -1,6 +1,6 @@
 import { ISlashCommandHandlers } from "../../types/slashCommand";
 import { Constants } from "discord.js";
-import { confessionChannelModel } from "../../model/confessionChannelModel";
+import { ServerInfoModel } from "../../model/ServerInfo";
 
 const confessionChannelHandler: ISlashCommandHandlers = {
   name: "confessionChannel".toLocaleLowerCase(),
@@ -39,7 +39,7 @@ const confessionChannelHandler: ISlashCommandHandlers = {
     try {
       if (
         !interaction.guild?.members?.guild.me?.permissions.has(
-          "MANAGE_CHANNELS"
+          "MANAGE_MESSAGES"
         )
       ) {
         interaction.reply({
@@ -48,54 +48,79 @@ const confessionChannelHandler: ISlashCommandHandlers = {
         });
         return;
       }
+
       const action = args.getSubcommand();
+      const ServerId = interaction.guild?.id;
+      if (!ServerId) {
+        interaction.reply({
+          content: "không tìm thấy server id",
+          ephemeral: true,
+        });
+        return;
+      }
+      const ServerInfoData =
+        (await ServerInfoModel.findOne({ ServerId })) ||
+        (await new ServerInfoModel({
+          ServerId,
+        }).save());
       if (action === "add") {
-        const channel = interaction.options.getChannel("channel");
-        // get server id
-        const serverId = interaction.guild?.id;
+        const channel = args.getChannel("channel");
         if (!channel) {
           interaction.reply({
-            content: "channel not found",
+            content: "không tìm thấy channel",
             ephemeral: true,
           });
           return;
         }
-        const confessionChannel = await confessionChannelModel.findOne({
-          serverId,
-        });
-        if (confessionChannel) {
+        if (ServerInfoData) {
+          if (ServerInfoData.confessionChannel?.ChannelId === channel.id) {
+            interaction.reply({
+              content: "server đã có confessionChannel",
+              ephemeral: true,
+            });
+            return;
+          }
+          await ServerInfoModel.findOneAndUpdate(
+            { ServerId },
+            {
+              confessionChannel: {
+                ChannelId: channel.id,
+              },
+            }
+          );
           interaction.reply({
-            content: "confession channel already exist",
+            content: "confessionChannel đã được thêm",
             ephemeral: true,
           });
           return;
         }
-        const newConfessionChannel = new confessionChannelModel({
-          serverId,
-          channelId: channel.id,
+        const newServerInfo = new ServerInfoModel({
+          ServerId,
+          confessionChannel: {
+            ChannelId: channel.id,
+          },
         });
-        await newConfessionChannel.save();
+        newServerInfo.save();
         interaction.reply({
-          content: "confession channel added",
+          content: "confessionChannel đã được thêm",
           ephemeral: true,
         });
+        return;
       } else if (action === "remove") {
-        const serverId = interaction.guild?.id;
-        const confessionChannel = await confessionChannelModel.findOne({
-          serverId,
-        });
-        if (!confessionChannel) {
+        if (ServerInfoData) {
+          ServerInfoData.confessionChannel = null;
+          ServerInfoData.save();
           interaction.reply({
-            content: "confession channel not found",
+            content: "confessionChannel đã được xóa",
             ephemeral: true,
           });
           return;
         }
-        await confessionChannelModel.findOneAndDelete({ serverId });
         interaction.reply({
-          content: "confession channel removed",
+          content: "server chưa có confessionChannel",
           ephemeral: true,
         });
+        return;
       }
     } catch (error) {
       console.log(error);

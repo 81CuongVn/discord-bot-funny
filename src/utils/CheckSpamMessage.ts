@@ -1,12 +1,14 @@
 import { Message, TextChannel } from "discord.js";
-import { SpamChannelModel } from "../model/SpamChannel";
 import { IClient } from "./../types/index";
+import { ServerInfoModel } from "../model/ServerInfo";
 const checkUserSpam = async (message: Message, client: IClient) => {
-  const spamChannel = await SpamChannelModel.findOne({
-    serverId: message.guild?.id,
-  });
+  const spamChannel = (
+    await ServerInfoModel.findOne({
+      ServerId: message.guild?.id,
+    })
+  )?.SpamChannel;
   if (spamChannel) {
-    if (message.channelId !== spamChannel?.channelId) {
+    if (message.channelId !== spamChannel?.ChannelId) {
       const messages = await message.channel.messages.fetch({ limit: 10 });
       const AllMessage = messages
         .map((m) => m)
@@ -26,8 +28,12 @@ const checkUserSpam = async (message: Message, client: IClient) => {
       //       " Bạn đã 1 nhắn tin lặp lại rồi tin bạn nhắn có nội dung như này : " +
       //       message.content
       //   );
-      if (spamChannel.turnOnBotSendMessageToSpamChannel === true) {
-        (client.channels.cache.get(spamChannel.channelId) as TextChannel).send(
+      if (spamChannel.turnOnBotSendMessageToSpamChannel) {
+        (
+          client.channels.cache.get(
+            spamChannel.LogChannelId || spamChannel.ChannelId
+          ) as TextChannel
+        ).send(
           `${message.author} đã gửi một tin nhắn bị trùng với nội dung là : ${message.content}, tại kênh ${message.channel} :)`
         );
       }

@@ -1,6 +1,6 @@
 import { ISlashCommandHandlers } from "../../types/slashCommand";
 import { Constants } from "discord.js";
-import { BotChatChannelModel } from "../../model/BotChatChannelModel";
+import { ServerInfoModel } from "../../model/ServerInfo";
 
 const BotChatChannelHandler: ISlashCommandHandlers = {
   name: "BotChatChannel".toLocaleLowerCase(),
@@ -37,7 +37,11 @@ const BotChatChannelHandler: ISlashCommandHandlers = {
   ],
   run: async (client, interaction, args) => {
     try {
-      if (!interaction.guild?.members?.guild.me?.permissions.has("MANAGE_MESSAGES")) {
+      if (
+        !interaction.guild?.members?.guild.me?.permissions.has(
+          "MANAGE_MESSAGES"
+        )
+      ) {
         interaction.reply({
           content: "bạn không có quyền dùng lệnh này",
           ephemeral: true,
@@ -46,67 +50,74 @@ const BotChatChannelHandler: ISlashCommandHandlers = {
       }
 
       const action = args.getSubcommand();
+      const ServerId = interaction.guild?.id;
+      if (!ServerId) {
+        interaction.reply({
+          content: "không tìm thấy server id",
+          ephemeral: true,
+        });
+        return;
+      }
+      const ServerInfoData =
+        (await ServerInfoModel.findOne({ ServerId })) ||
+        (await new ServerInfoModel({
+          ServerId,
+        }).save());
       if (action === "add") {
-        const channel = interaction.options.getChannel("channel");
-        // get server id
-        const serverId = interaction.guild?.id;
+        const channel = args.getChannel("channel");
         if (!channel) {
           interaction.reply({
-            content: "channel not found",
+            content: "không tìm thấy channel",
             ephemeral: true,
           });
           return;
         }
-        const botChatChannel = await BotChatChannelModel.findOne({
-          serverId,
-        });
-        if (botChatChannel) {
-          if (botChatChannel.channelId === channel.id) {
+        if (ServerInfoData) {
+          if (ServerInfoData.BotChatChannel?.ChannelId === channel.id) {
             interaction.reply({
-              content: "channel already added",
-              ephemeral: true,
-            });
-            return;
-          } else {
-            await BotChatChannelModel.findOneAndUpdate(
-              { serverId },
-              { channelId: channel.id }
-            );
-            interaction.reply({
-              content: "channel changed channel info in bot database",
+              content: "server đã có BotChatChannel",
               ephemeral: true,
             });
             return;
           }
-        } else {
-          const newBotChatChannel = new BotChatChannelModel({
-            serverId,
-            channelId: channel.id,
-          });
-          await newBotChatChannel.save();
+          await ServerInfoModel.findOneAndUpdate(
+            { ServerId },
+            {
+              BotChatChannel: {
+                ChannelId: channel.id,
+              },
+            }
+          );
           interaction.reply({
-            content: "channel added to bot database",
+            content: "BotChatChannel đã được thêm",
             ephemeral: true,
           });
           return;
         }
-      } else if (action === "remove") {
-        const serverId = interaction.guild?.id;
-        const botChatChannel = await BotChatChannelModel.findOne({
-          serverId,
+        const newServerInfo = new ServerInfoModel({
+          ServerId,
+          BotChatChannel: {
+            ChannelId: channel.id,
+          },
         });
-        if (!botChatChannel) {
-          interaction.reply({
-            content: "channel not found",
-            ephemeral: true,
-          });
-          return;
-        }
-        await BotChatChannelModel.findOneAndDelete({
-          serverId,
-        });
+        newServerInfo.save();
         interaction.reply({
-          content: "channel removed from bot database",
+          content: "BotChatChannel đã được thêm",
+          ephemeral: true,
+        });
+        return;
+      } else if (action === "remove") {
+        if (ServerInfoData) {
+          ServerInfoData.BotChatChannel = null;
+          ServerInfoData.save();
+          interaction.reply({
+            content: "BotChatChannel đã được xóa",
+            ephemeral: true,
+          });
+          return;
+        }
+        interaction.reply({
+          content: "server chưa có BotChatChannel",
           ephemeral: true,
         });
         return;

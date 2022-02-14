@@ -6,6 +6,12 @@ import {
 } from "discord.js";
 import { MenuId } from "../../types/MenuId";
 import { IMessageCommandHandlers } from "./../../types/MessageCommand";
+function isValidURL(string: string) {
+  var res = string.match(
+    /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+  );
+  return res !== null;
+}
 export default {
   name: "play",
   description: "find song for you chose",
@@ -33,6 +39,29 @@ export default {
       message.reply("bạn chưa nhập tên bài hát");
       return;
     }
+    if (isValidURL(musicName)) {
+      if (!message.member?.voice.channel) {
+        message.reply("bạn đang không ở trong kênh nhạc");
+        return;
+      }
+      if (message.channel.type !== "GUILD_TEXT") {
+        message.reply("bạn phải ở trong kênh nhạc của mình");
+        return;
+      }
+      client.disTube?.play(message.member?.voice.channel, musicName, {
+        textChannel: message.channel,
+        metadata: {
+          channel: message.member?.voice.channel,
+          textChannelId: message.channel.id,
+          user: message.author.id,
+        },
+      });
+      client.disTube
+        ?.getQueue(message.member?.voice.channel.id)
+        ?.setVolume(100);
+      return;
+    }
+
     const video = await client.disTube?.search(musicName, {
       limit: 6,
       type: "video",
@@ -88,15 +117,15 @@ export default {
         m.reply("bạn phải ở trong kênh nhạc của mình");
         return;
       }
-       client.disTube?.play(m.member?.voice.channel, track.url, {
+      client.disTube?.play(m.member?.voice.channel, track.url, {
         textChannel: m.channel,
         metadata: {
           channel: m.member?.voice.channel,
           textChannelId: m.channel.id,
           user: m.author.id,
         },
-       })
-      client.disTube?.getQueue(m.member?.voice.channel.id)?.setVolume(100)
+      });
+      client.disTube?.getQueue(m.member?.voice.channel.id)?.setVolume(100);
       wasChoose = true;
       if (botMessage.deletable) botMessage.delete();
       collect.emit("end");

@@ -1,5 +1,5 @@
 import { Constants } from "discord.js";
-import { SpamChannelModel } from "../../model/SpamChannel";
+import { ServerInfoModel } from "../../model/ServerInfo";
 import { ISlashCommandHandlers } from "../../types/slashCommand";
 const spamChannelHandler: ISlashCommandHandlers = {
   name: "spamChannel".toLocaleLowerCase(),
@@ -34,89 +34,98 @@ const spamChannelHandler: ISlashCommandHandlers = {
       ],
     },
   ],
-  run: async (client, interaction, options) => {
+  run: async (client, interaction, args) => {
     try {
       if (
         !interaction.guild?.members?.guild.me?.permissions.has(
-          "MANAGE_CHANNELS"
+          "MANAGE_MESSAGES"
         )
       ) {
         interaction.reply({
-          content: "Bạn không có quyền thêm vào kênh spam",
+          content: "bạn không có quyền dùng lệnh này",
           ephemeral: true,
         });
         return;
       }
-      const action = options.getSubcommand();
 
-      let server: string | undefined = interaction.guild?.id;
-      if (!server) {
-        server = interaction.client.user?.id;
-      } else {
-        server = interaction.guild?.id;
+      const action = args.getSubcommand();
+      const ServerId = interaction.guild?.id;
+      if (!ServerId) {
+        interaction.reply({
+          content: "không tìm thấy server id",
+          ephemeral: true,
+        });
+        return;
       }
+      const ServerInfoData =
+        (await ServerInfoModel.findOne({ ServerId })) ||
+        (await new ServerInfoModel({
+          ServerId,
+        }).save());
       if (action === "add") {
-        const channel = options.getChannel("channel");
+        const channel = args.getChannel("channel");
         if (!channel) {
           interaction.reply({
-            content: "Bạn chưa chọn channel",
+            content: "không tìm thấy channel",
             ephemeral: true,
           });
           return;
         }
-        const spamChannel = await SpamChannelModel.findOne({
-          serverId: server,
-        });
-        if (spamChannel) {
-          if (spamChannel.channelId === channel.id) {
+        if (ServerInfoData) {
+          if (ServerInfoData.SpamChannel?.ChannelId === channel.id) {
             interaction.reply({
-              content: "bạn đã thêm spam channel này rồi ",
+              content: "server đã có SpamChannel",
               ephemeral: true,
             });
             return;
           }
-          await SpamChannelModel.findOneAndUpdate(
-            { serverId: server },
-            { channelId: channel.id }
+          await ServerInfoModel.findOneAndUpdate(
+            { ServerId },
+            {
+              SpamChannel: {
+                ChannelId: channel.id,
+                LogChannelId: channel.id,
+              },
+            }
           );
           interaction.reply({
-            content:
-              "Bạn đã có channel spam rồi nên bot chỉ sửa lại thông tin của channel spam",
+            content: "SpamChannel đã được thêm",
             ephemeral: true,
           });
           return;
         }
-        const newSpamChannelInfo = new SpamChannelModel({
-          serverId: server,
-          channelId: channel.id,
+        const newServerInfo = new ServerInfoModel({
+          ServerId,
+          SpamChannel: {
+            ChannelId: channel.id,
+          },
         });
-        newSpamChannelInfo.save();
+        newServerInfo.save();
         interaction.reply({
-          content: "thêm thông tin channel spam thành công",
+          content: "SpamChannel đã được thêm",
           ephemeral: true,
         });
+        return;
       } else if (action === "remove") {
-        const spamChannel = await SpamChannelModel.findOne({
-          serverId: server,
-        });
-        if (!spamChannel) {
+        if (ServerInfoData) {
+          ServerInfoData.SpamChannel = null;
+          ServerInfoData.save();
           interaction.reply({
-            content: "không có channel spam nào",
+            content: "SpamChannel đã được xóa",
             ephemeral: true,
           });
           return;
         }
-        await SpamChannelModel.findOneAndDelete({ serverId: server });
         interaction.reply({
-          content: "xóa thông tin channel spam thành công",
+          content: "server chưa có SpamChannel",
           ephemeral: true,
         });
+        return;
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
       interaction.reply({
         content: "server have some error try again later",
-        ephemeral: true,
       });
     }
   },

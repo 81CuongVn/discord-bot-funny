@@ -7,12 +7,13 @@ import { IClient } from "./types";
 import interactionCreate from "./event/interaction/interactionCreate";
 import onClientReady from "./event/ready";
 import { MessageCreateHandler } from "./event/message/messageCreate";
-
+const  a= require
 import { DisTube, Song } from "distube";
 import { HelloChannelModel } from "./model/HelloChannel";
 import { getMessageButtonForMusic } from "./utils/MessageButtonForMusic";
 import { ButtonId } from "./types/ButtonId";
 import { kelpBotIsRunning } from "./kelpBotIsRunning";
+import { ServerInfoModel } from './model/ServerInfo';
 
 dotenv.config({ path: path.join(__dirname, "./.env") });
 const client: IClient = new Client({
@@ -100,6 +101,9 @@ readdirSync(path.join(__dirname, "./handlers/")).forEach((han) => {
   handlers(client);
 });
 client.on("guildCreate", async (guild) => {
+  await new ServerInfoModel({
+    ServerId: guild.id,
+  }).save();
   const guildId = guild.id;
   if (!guildId) return;
   if (guildId) {

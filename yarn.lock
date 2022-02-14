@@ -245,6 +245,13 @@
     "@types/node" "*"
     "@types/responselike" "*"
 
+"@types/colors@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/colors/-/colors-1.2.1.tgz#57703f1a9f7f5fc40afb81eef13e96acdd1016a6"
+  integrity sha512-7jNkpfN2lVO07nJ1RWzyMnNhH/I5N9iWuMPx9pedptxJ4MODf8rRV0lbJi6RakQ4sKQk231Fw4e2W9n3D7gZ3w==
+  dependencies:
+    colors "*"
+
 "@types/common-tags@^1.8.1":
   version "1.8.1"
   resolved "https://registry.npmjs.org/@types/common-tags/-/common-tags-1.8.1.tgz"
@@ -844,6 +851,11 @@ color-support@^1.1.2:
   resolved "https://registry.npmjs.org/color-support/-/color-support-1.1.3.tgz"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
+colors@*, colors@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
+  integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
+
 combined-stream@^1.0.8:
   version "1.0.8"
   resolved "https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz"
@@ -1047,6 +1059,11 @@ defer-to-connect@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/defer-to-connect/-/defer-to-connect-2.0.1.tgz"
   integrity sha512-4tvttepXG1VaYGrRibk5EwJd1t4udunSOVMdLSAL6mId1ix438oPwPZMALY41FCijukO1L0twNcGsdzS7dHgDg==
+
+delay@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/delay/-/delay-5.0.0.tgz#137045ef1b96e5071060dd5be60bf9334436bd1d"
+  integrity sha512-ReEBKkIfe4ya47wlPYf/gu5ib6yUG0/Aez0JQZQz94kiWtRQvZIQbTiehsnwHvLSWJnQdhVeqYue7Id1dKr0qw==
 
 delayed-stream@~1.0.0:
   version "1.0.0"

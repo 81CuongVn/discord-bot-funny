@@ -1,6 +1,6 @@
 import { MessageEmbed, TextChannel } from "discord.js";
 import { IMessageCommandHandlers } from "./../../types/MessageCommand";
-import { confessionChannelModel } from "./../../model/confessionChannelModel";
+import { ServerInfoModel } from "../../model/ServerInfo";
 
 export default {
   name: "confession",
@@ -12,9 +12,11 @@ export default {
   run: async (client, message, args) => {
     try {
       if (!message.guild) return;
-      let confessionChannel = await confessionChannelModel.findOne({
-        serverId: message.guild?.id,
-      });
+      let confessionChannel = (
+        await ServerInfoModel.findOne({
+          ServerId: message.guild.id,
+        })
+      )?.confessionChannel;
       if (!confessionChannel) {
         message.reply("không có confession channel nào ");
         return;
@@ -32,7 +34,7 @@ export default {
         .setTimestamp()
         .setFooter("được gửi từ người ẩn danh");
       const channel = client.channels.cache.get(
-        confessionChannel.channelId
+        confessionChannel.ChannelId
       ) as TextChannel;
       if (!channel) {
         message.reply("không tìm thấy kênh confession");
