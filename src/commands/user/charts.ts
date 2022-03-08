@@ -58,7 +58,7 @@ export default {
         description +=
           `${index} . <@` +
           allServerVote[index].UserId +
-          `> ${vote.voteNumber} - ${vote.UpVote} - ${vote.DownVote}\n`;
+          `> ${vote.voteNumber} - vote : ${vote.UpVote} - unvote : ${vote.DownVote}\n`;
         index = index + 1;
       }
       const embed = new MessageEmbed()

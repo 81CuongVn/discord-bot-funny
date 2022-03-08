@@ -1,5 +1,5 @@
 import { IMessageCommandHandlers } from "../../types/MessageCommand";
-import { Client, Message } from "discord.js";
+import { Client, MessageEmbed } from "discord.js";
 function msToHMS(ms: number) {
   // 1- Convert to seconds:
   let seconds = ms / 1000;
@@ -19,13 +19,17 @@ const dataExportPing: IMessageCommandHandlers = {
   description: "ping bot",
   usage: "ping",
   permission: [],
-  run: async (client: Client<boolean>, message: Message, args: string[]) => {
+  run: async (client: Client<boolean>, message, args: string[]) => {
     try {
-      message.channel.send(
-        `Pong! ${client.ws.ping} ms và bot đã up được ${
-          client.uptime && msToHMS(client.uptime)
-        }`
-      );
+      const embed = new MessageEmbed()
+        .setColor("#0099ff")
+        .setDescription(
+          `:ping_pong: Pong! ${client.ws.ping} ms và bot đã up được ${
+            client.uptime && msToHMS(client.uptime)
+          }`
+        )
+        .setTitle("Ping");
+      message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.log(error);
       message.channel.send("server have some error try again later");

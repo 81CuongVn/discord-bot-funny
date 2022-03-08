@@ -3,6 +3,7 @@ import ConnectToDb from "../utils/connectDB";
 import { IClient } from "./../types/index";
 
 const onClientReady = async (client: IClient) => {
+  client.channels.cache.get
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
     throw new Error("DATABASE_URL is not defined");

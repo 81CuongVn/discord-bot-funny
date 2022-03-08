@@ -31,7 +31,7 @@ export default async (client: IClient) => {
         } else {
           command.name = command.name.toLocaleLowerCase();
           client.slashCommand?.set(command.name, fileName);
-          data.push([file, "☑ ok"]);
+          // data.push([file, "☑ ok"]);
           if (command.description) arrayOfCommands.push(command);
         }
       } else {

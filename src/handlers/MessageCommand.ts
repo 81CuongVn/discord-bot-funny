@@ -21,7 +21,7 @@ const MessageCommandHandler = async (client: IClient) => {
     const pull = await ImportFile(fileName);
     if (pull?.name) {
       client.commands?.set(pull.name, pull);
-      dataLog.push([file, "☑ file status is good"]);
+      // dataLog.push([file, "☑ file status is good"]);
     } else {
       dataLog.push([file, " thieu name"]);
       continue;

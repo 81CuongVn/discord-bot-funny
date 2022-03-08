@@ -7,11 +7,9 @@ import { IClient } from "./types";
 import interactionCreate from "./event/interaction/interactionCreate";
 import onClientReady from "./event/ready";
 import { MessageCreateHandler } from "./event/message/messageCreate";
-const  a= require
-import { DisTube, Song } from "distube";
+import { DisTube } from "distube";
 import { HelloChannelModel } from "./model/HelloChannel";
 import { getMessageButtonForMusic } from "./utils/MessageButtonForMusic";
-import { ButtonId } from "./types/ButtonId";
 import { kelpBotIsRunning } from "./kelpBotIsRunning";
 import { ServerInfoModel } from './model/ServerInfo';
 

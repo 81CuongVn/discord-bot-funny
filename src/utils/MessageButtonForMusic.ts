@@ -1,9 +1,6 @@
 import {
-  ButtonInteraction,
-  CacheType,
   MessageActionRow,
   MessageButton,
-  SelectMenuInteraction,
 } from "discord.js";
 import { Queue, RepeatMode } from "distube";
 import { ButtonId } from "./../types/ButtonId";
@@ -50,7 +47,8 @@ export const getMessageButtonForMusic = (queue: Queue) => {
   return allRow;
 };
 export const getButton = () => {
-  const buttonTimeOut = new Date(Date.now() + 1000 * 60 * 60);
+  // 1 house
+  const buttonTimeOut = new Date(Date.now() + 1000 * 60 * 60 * 24);
   return [
     new MessageButton()
       .setCustomId(`${ButtonId.SkipMusic}_${buttonTimeOut.toISOString()}`)

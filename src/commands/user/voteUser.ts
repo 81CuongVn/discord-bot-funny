@@ -13,7 +13,7 @@ export default {
       message.reply("bạn chưa nhập thông tin");
       return;
     }
-
+    console.log(args);
     const member =
       message.mentions.members?.first() ||
       message.guild?.members.cache.get(args[1]);
