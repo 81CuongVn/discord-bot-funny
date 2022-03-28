@@ -14,7 +14,7 @@ const AvatarController: IMessageCommandHandlers = {
         message.mentions.members?.first() ||
         message.guild?.members.cache.get(args[0]) ||
         message.member;
-      const url = member?.user.displayAvatarURL();
+      const url = member?.user.displayAvatarURL({ dynamic: true });
       if (!url) return;
       const avatarEmbed = new MessageEmbed()
         .setColor("RANDOM")
